@@ -39,8 +39,18 @@ public class BaselineObservationEvaluator implements RowPerPatientDataEvaluator{
 		PatientDataResult patientDataResult = Context.getService(RowPerPatientDataService.class).evaluate(mapped, context);
 		
 		Date dateOfObs = (Date)patientDataResult.getValue();
+		
 		if(dateOfObs != null)
 		{
+			if(pd.getOffset() > 0)
+			{
+				Calendar adjusted = Calendar.getInstance();
+				adjusted.setTime(dateOfObs);
+				adjusted.add(pd.getOffsetType(), pd.getOffset());
+				
+				dateOfObs = adjusted.getTime();
+			}
+			
 			Calendar beforeDate = Calendar.getInstance();
 			beforeDate.setTime(dateOfObs);
 			beforeDate.add(Calendar.DAY_OF_YEAR, -pd.getBefore());
@@ -53,11 +63,11 @@ public class BaselineObservationEvaluator implements RowPerPatientDataEvaluator{
 			
 			if(pd.getGroupConcept() != null)
 			{
-				obsId = Context.getService(RowPerPatientDataService.class).getDao().getObsValueBetweenDates(pd.getPatientId(), pd.getConcept().getConceptId(), pd.getGroupConcept().getConceptId(), beforeDate.getTime(), afterDate.getTime());
+				obsId = Context.getService(RowPerPatientDataService.class).getDao().getObsValueBetweenDates(pd.getPatientId(), pd.getConcept().getConceptId(), pd.getGroupConcept().getConceptId(), beforeDate.getTime(), afterDate.getTime(), dateOfObs);
 			}
 			else
 			{
-				obsId = Context.getService(RowPerPatientDataService.class).getDao().getObsValueBetweenDates(pd.getPatientId(), pd.getConcept().getConceptId(), beforeDate.getTime(), afterDate.getTime());
+				obsId = Context.getService(RowPerPatientDataService.class).getDao().getObsValueBetweenDates(pd.getPatientId(), pd.getConcept().getConceptId(), beforeDate.getTime(), afterDate.getTime(), dateOfObs);
 			}
 			
 			if(obsId != null)

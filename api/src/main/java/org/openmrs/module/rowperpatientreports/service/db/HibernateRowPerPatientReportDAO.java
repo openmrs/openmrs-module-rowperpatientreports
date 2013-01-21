@@ -7,7 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
-import org.openmrs.ProgramWorkflow;
+import org.openmrs.Concept;
 
 
 public class HibernateRowPerPatientReportDAO implements RowPerPatientReportDAO{
@@ -168,12 +168,13 @@ public class HibernateRowPerPatientReportDAO implements RowPerPatientReportDAO{
 	    return null;
 	}
 	
-	public Integer getObsValueBetweenDates(Integer patientId, Integer conceptId, Date beforeDate, Date afterDate) {
-		SQLQuery obsBeforeDate = sessionFactory.getCurrentSession().createSQLQuery("select obs_id from obs where person_id = :patientId and concept_id = :conceptId and voided = 0 and obs_dateTime > :beforeDate and obs_dateTime < :afterDate order by obs_dateTime");
+	public Integer getObsValueBetweenDates(Integer patientId, Integer conceptId, Date beforeDate, Date afterDate, Date targetDate) {
+		SQLQuery obsBeforeDate = sessionFactory.getCurrentSession().createSQLQuery("select obs_id from obs where person_id = :patientId and concept_id = :conceptId and voided = 0 and obs_dateTime > :beforeDate and obs_dateTime < :afterDate ORDER BY abs(:targetDate - obs_dateTime)");
 		obsBeforeDate.setInteger("patientId", patientId);
 		obsBeforeDate.setInteger("conceptId", conceptId);
 		obsBeforeDate.setDate("beforeDate", beforeDate);
 		obsBeforeDate.setDate("afterDate", afterDate);
+		obsBeforeDate.setDate("targetDate", targetDate);
 		
 		List<Integer> obs = obsBeforeDate.list();
 		if(obs != null && obs.size() > 0)
@@ -184,13 +185,14 @@ public class HibernateRowPerPatientReportDAO implements RowPerPatientReportDAO{
 	    return null;
     }
 	
-	public Integer getObsValueBetweenDates(Integer patientId, Integer conceptId, Integer groupId, Date beforeDate, Date afterDate) {
-		SQLQuery obsBeforeDate = sessionFactory.getCurrentSession().createSQLQuery("select o.obs_id from obs o, obs og where o.person_id = :patientId and o.concept_id = :conceptId and o.voided = 0 and o.obs_dateTime > :beforeDate and o.obs_dateTime < :afterDate and o.obs_group_id = og.obs_id and og.voided = 0 and og.concept_id = :groupId order by o.obs_dateTime");
+	public Integer getObsValueBetweenDates(Integer patientId, Integer conceptId, Integer groupId, Date beforeDate, Date afterDate, Date targetDate) {
+		SQLQuery obsBeforeDate = sessionFactory.getCurrentSession().createSQLQuery("select o.obs_id from obs o, obs og where o.person_id = :patientId and o.concept_id = :conceptId and o.voided = 0 and o.obs_dateTime > :beforeDate and o.obs_dateTime < :afterDate and o.obs_group_id = og.obs_id and og.voided = 0 and og.concept_id = :groupId ORDER BY abs(:targetDate - obs_dateTime)");
 		obsBeforeDate.setInteger("patientId", patientId);
 		obsBeforeDate.setInteger("conceptId", conceptId);
 		obsBeforeDate.setDate("beforeDate", beforeDate);
 		obsBeforeDate.setInteger("groupId", groupId);
 		obsBeforeDate.setDate("afterDate", afterDate);
+		obsBeforeDate.setDate("targetDate", targetDate);
 		
 		List<Integer> obs = obsBeforeDate.list();
 		if(obs != null && obs.size() > 0)
@@ -200,7 +202,41 @@ public class HibernateRowPerPatientReportDAO implements RowPerPatientReportDAO{
 		
 	    return null;
     }
-
+	
+	public Integer getObsAnswerBetweenDates(Integer patientId, Integer answerId, Date beforeDate, Date afterDate, Date targetDate) {
+		SQLQuery obsBeforeDate = sessionFactory.getCurrentSession().createSQLQuery("select obs_id from obs where person_id = :patientId and value_coded = :conceptId and voided = 0 and obs_dateTime > :beforeDate and obs_dateTime < :afterDate ORDER BY abs(:targetDate - obs_dateTime)");
+		obsBeforeDate.setInteger("patientId", patientId);
+		obsBeforeDate.setInteger("conceptId", answerId);
+		obsBeforeDate.setDate("beforeDate", beforeDate);
+		obsBeforeDate.setDate("afterDate", afterDate);
+		obsBeforeDate.setDate("targetDate", targetDate);
+		
+		List<Integer> obs = obsBeforeDate.list();
+		if(obs != null && obs.size() > 0)
+		{
+			return obs.get(0);
+		}
+		
+	    return null;
+    }
+	
+	public Integer getObsAnswerBetweenDates(Integer patientId, List<Integer> questions, Integer answerId, Date beforeDate, Date afterDate, Date targetDate) {
+		SQLQuery obsBeforeDate = sessionFactory.getCurrentSession().createSQLQuery("select obs_id from obs where person_id = :patientId and value_coded = :conceptId and concept_id in (:questions) and voided = 0 and obs_dateTime > :beforeDate and obs_dateTime < :afterDate ORDER BY abs(:targetDate - obs_dateTime)");
+		obsBeforeDate.setInteger("patientId", patientId);
+		obsBeforeDate.setInteger("conceptId", answerId);
+		obsBeforeDate.setDate("beforeDate", beforeDate);
+		obsBeforeDate.setDate("afterDate", afterDate);
+		obsBeforeDate.setDate("targetDate", targetDate);
+		obsBeforeDate.setParameterList("questions", questions);
+		
+		List<Integer> obs = obsBeforeDate.list();
+		if(obs != null && obs.size() > 0)
+		{
+			return obs.get(0);
+		}
+		
+	    return null;
+    }
 	
 	public Date getDateOfProgramEnrolmentAscending(Integer patientId, Integer programId) {
 		SQLQuery dateOfProgramEnrolment = sessionFactory.getCurrentSession().createSQLQuery("select date_enrolled from patient_program where patient_id = :patientId and program_id = :programId and voided = 0 order by date_enrolled asc");

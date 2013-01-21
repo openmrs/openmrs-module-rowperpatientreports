@@ -99,17 +99,17 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 		
 		//left here for testing so that you can restrict the number of patients returned to 10
 		//to speed up execution time
-		//int i = 0;
+		int i = 0;
 		for (Integer patientId : cohort.getMemberIds()) {			
 			DataSetRow row = new DataSetRow();
 			
 			//left here for testing purposes
-//			i++;
+			i++;
 //			if(i > 10)
 //			{
 //				break;
 //			}
-			
+					
 			for(Mapped<RowPerPatientData> mapped: definition.getColumns())
 			{
 				//set up patientData and evaluate
@@ -129,8 +129,6 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 				
 				
 				PatientDataResult patientDataResult = Context.getService(RowPerPatientDataService.class).evaluate(mapped, childContext);
-				
-				
 				
 				addDataToRow(patientDataResult, row);
 			}

@@ -9,13 +9,17 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 
 public class BaselineObservation extends BasePatientData implements RowPerPatientData, DateOfPatientData {
 
-	private Concept concept;
+private Concept concept;
 	
 	private Mapped<RowPerPatientData> dateOfPatientData;
 	
 	private int before;
 	
 	private int after;
+	
+	private int offset = 0;
+	
+	private int offsetType;
 	
 	private String dateFormat = "yyyy-MM-dd";
 	
@@ -112,5 +116,20 @@ public class BaselineObservation extends BasePatientData implements RowPerPatien
     public void setGroupConcept(Concept groupConcept) {
     	this.groupConcept = groupConcept;
     }
+    
+    public int getOffset() {
+    	return offset;
+    }
+
+    public int getOffsetType() {
+    	return offsetType;
+    }
+
+	
+    public void setOffset(int offset, int offsetType) {
+    	this.offset = offset;
+    	this.offsetType = offsetType;
+    }
+
     
 }

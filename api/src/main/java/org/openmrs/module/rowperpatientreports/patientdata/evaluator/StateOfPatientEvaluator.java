@@ -48,7 +48,10 @@ public class StateOfPatientEvaluator implements RowPerPatientDataEvaluator {
 				}
 				else if(pp.getDateEnrolled() != null)
 				{
-					if(ppp.getDateEnrolled() == null || pp.getDateEnrolled().after(ppp.getDateEnrolled()));
+					if(ppp.getDateEnrolled() == null || pp.getDateEnrolled().after(ppp.getDateEnrolled()))
+					{
+						ppp = pp;
+					}
 				}
 			}
 		}
