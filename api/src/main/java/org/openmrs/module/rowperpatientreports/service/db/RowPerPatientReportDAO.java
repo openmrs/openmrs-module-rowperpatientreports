@@ -10,13 +10,13 @@ public interface RowPerPatientReportDAO {
 	
 	public Date getBirthDate(Integer patientId);
 	
-	public Date getDateOfWorkflowStateChange(Integer patientId, Integer stateId);
+	public Date getDateOfWorkflowStateChange(Integer patientId, Integer stateId, Date startDate, Date endDate);
 	
-	public Date getDateOfProgramEnrolment(Integer patientId, Integer programId);
+	public Date getDateOfProgramEnrolment(Integer patientId, Integer programId, Date startDate, Date endDate);
 	
-	public Date getDateOfProgramEnrolmentAscending(Integer patientId, Integer programId);
+	public Date getDateOfProgramEnrolmentAscending(Integer patientId, Integer programId, Date startDate, Date endDate);
 	
-	public Date getDateOfWorkflowStateChange(Integer patientId, List<Integer> stateIds);
+	public Date getDateOfWorkflowStateChange(Integer patientId, List<Integer> stateIds, Date startDate, Date endDate);
 	
 	public Integer getObsValueBeforeDate(Integer patientId, Integer conceptId, Date compareDate);
 	

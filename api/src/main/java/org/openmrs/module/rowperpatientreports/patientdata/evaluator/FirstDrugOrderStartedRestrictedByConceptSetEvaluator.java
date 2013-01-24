@@ -13,6 +13,7 @@ import org.openmrs.module.rowperpatientreports.patientdata.definition.FirstDrugO
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
 import org.openmrs.module.rowperpatientreports.patientdata.result.DrugOrdersResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
+import org.openmrs.util.OpenmrsUtil;
 
 @Handler(supports={FirstDrugOrderStartedRestrictedByConceptSet.class})
 public class FirstDrugOrderStartedRestrictedByConceptSetEvaluator implements RowPerPatientDataEvaluator{
@@ -50,7 +51,7 @@ public class FirstDrugOrderStartedRestrictedByConceptSetEvaluator implements Row
 						{
 							if(drugConcepts.contains(drug))
 							{
-								if(order.getStartDate() != null)
+								if(order.getStartDate() != null && (pd.getStartDate() == null || OpenmrsUtil.compare(order.getStartDate(), pd.getStartDate()) >= 0) && (pd.getEndDate() == null || OpenmrsUtil.compare(order.getStartDate(), pd.getEndDate()) <= 0))
 								{		
 									if(startDrugOrder == null || order.getStartDate().before(startDrugOrder.getStartDate()))
 									{

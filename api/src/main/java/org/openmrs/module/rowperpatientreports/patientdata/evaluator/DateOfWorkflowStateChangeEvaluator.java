@@ -26,7 +26,7 @@ public class DateOfWorkflowStateChangeEvaluator implements RowPerPatientDataEval
 		
 		result.setFormat(pd.getDateFormat());
 
-		Date workflowChange = Context.getService(RowPerPatientDataService.class).getDao().getDateOfWorkflowStateChange(pd.getPatientId(), pd.getConcept().getId());
+		Date workflowChange = Context.getService(RowPerPatientDataService.class).getDao().getDateOfWorkflowStateChange(pd.getPatientId(), pd.getConcept().getId(), pd.getStartDate(), pd.getEndDate());
 		
 		result.setValue(workflowChange);
 	

@@ -1,5 +1,6 @@
 package org.openmrs.module.rowperpatientreports.service.db;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -7,7 +8,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
-import org.openmrs.Concept;
 
 
 public class HibernateRowPerPatientReportDAO implements RowPerPatientReportDAO{
@@ -38,11 +38,27 @@ public class HibernateRowPerPatientReportDAO implements RowPerPatientReportDAO{
 		return birthDate;
     }
 
-	public Date getDateOfWorkflowStateChange(Integer patientId, Integer conceptId) {
+	public Date getDateOfWorkflowStateChange(Integer patientId, Integer conceptId, Date startDate, Date endDate) {
 		
-		SQLQuery dateOfWorkFlowStateQuery = sessionFactory.getCurrentSession().createSQLQuery("select start_date from patient_state ps, patient_program pp, program_workflow_state pws where pp.patient_program_id = ps.patient_program_id  and pws.program_workflow_state_id = ps.state and ps.voided = 0 and pws.concept_id = :conceptId and pp.patient_id = :patientId ");
+		Date sDate = new Date();
+		sDate.setTime(0);
+		
+		Date eDate = Calendar.getInstance().getTime();
+		
+		if(startDate != null)
+		{
+			sDate = startDate;
+		}
+		if(endDate != null)
+		{
+			eDate = endDate;
+		}
+		
+		SQLQuery dateOfWorkFlowStateQuery = sessionFactory.getCurrentSession().createSQLQuery("select start_date from patient_state ps, patient_program pp, program_workflow_state pws where pp.patient_program_id = ps.patient_program_id  and pws.program_workflow_state_id = ps.state and ps.voided = 0 and pws.concept_id = :conceptId and pp.patient_id = :patientId and ps.start_date >= :startDate and ps.start_date <= :endDate");
 		dateOfWorkFlowStateQuery.setInteger("patientId", patientId);
 		dateOfWorkFlowStateQuery.setInteger("conceptId", conceptId);
+		dateOfWorkFlowStateQuery.setDate("startDate", sDate);
+		dateOfWorkFlowStateQuery.setDate("endDate", eDate);
 		
 		List<Date> dateOfWorkflow = (List<Date>)dateOfWorkFlowStateQuery.list();
 		
@@ -54,7 +70,22 @@ public class HibernateRowPerPatientReportDAO implements RowPerPatientReportDAO{
 	    return null;
     }
 
-	public Date getDateOfWorkflowStateChange(Integer patientId, List<Integer> conceptIds) {
+	public Date getDateOfWorkflowStateChange(Integer patientId, List<Integer> conceptIds, Date startDate, Date endDate) {
+		
+		Date sDate = new Date();
+		sDate.setTime(0);
+		
+		Date eDate = Calendar.getInstance().getTime();
+		
+		if(startDate != null)
+		{
+			sDate = startDate;
+		}
+		if(endDate != null)
+		{
+			eDate = endDate;
+		}
+		
 		StringBuilder sql = new StringBuilder("select start_date from patient_state ps, patient_program pp, program_workflow_state pws where pp.patient_program_id = ps.patient_program_id  and pws.program_workflow_state_id = ps.state and ps.voided = 0 and pp.patient_id = :patientId and pws.concept_id in(");
 		int i = 1;
 		for(Integer conceptId: conceptIds)
@@ -67,7 +98,7 @@ public class HibernateRowPerPatientReportDAO implements RowPerPatientReportDAO{
 			sql.append(i);
 			i++;
 		}
-		sql.append(")");
+		sql.append(") and ps.start_date >= :startDate and ps.start_date <= :endDate");
 		
 		SQLQuery dateOfWorkFlowStateQuery = sessionFactory.getCurrentSession().createSQLQuery(sql.toString());
 		dateOfWorkFlowStateQuery.setInteger("patientId", patientId);
@@ -78,6 +109,8 @@ public class HibernateRowPerPatientReportDAO implements RowPerPatientReportDAO{
 			i++;
 			dateOfWorkFlowStateQuery.setInteger(variableName, conceptId);
 		}
+		dateOfWorkFlowStateQuery.setDate("startDate", sDate);
+		dateOfWorkFlowStateQuery.setDate("endDate", eDate);
 		
 		List<Date> dateOfWorkflow = (List<Date>)dateOfWorkFlowStateQuery.list();
 		
@@ -153,10 +186,27 @@ public class HibernateRowPerPatientReportDAO implements RowPerPatientReportDAO{
 	    return null;
     }
 
-	public Date getDateOfProgramEnrolment(Integer patientId, Integer programId) {
-		SQLQuery dateOfProgramEnrolment = sessionFactory.getCurrentSession().createSQLQuery("select date_enrolled from patient_program where patient_id = :patientId and program_id = :programId and voided = 0 order by date_enrolled desc");
+	public Date getDateOfProgramEnrolment(Integer patientId, Integer programId, Date startDate, Date endDate) {
+		
+		Date sDate = new Date();
+		sDate.setTime(0);
+		
+		Date eDate = Calendar.getInstance().getTime();
+		
+		if(startDate != null)
+		{
+			sDate = startDate;
+		}
+		if(endDate != null)
+		{
+			eDate = endDate;
+		}
+		
+		SQLQuery dateOfProgramEnrolment = sessionFactory.getCurrentSession().createSQLQuery("select date_enrolled from patient_program where patient_id = :patientId and program_id = :programId and voided = 0 and date_enrolled >= :startDate and date_enrolled <= :endDate order by date_enrolled desc");
 		dateOfProgramEnrolment.setInteger("patientId", patientId);
 		dateOfProgramEnrolment.setInteger("programId", programId);
+		dateOfProgramEnrolment.setDate("startDate", sDate);
+		dateOfProgramEnrolment.setDate("endDate", eDate);
 		
 		List<Date> dateOfEnrolment = (List<Date>)dateOfProgramEnrolment.list();
 		
@@ -238,10 +288,27 @@ public class HibernateRowPerPatientReportDAO implements RowPerPatientReportDAO{
 	    return null;
     }
 	
-	public Date getDateOfProgramEnrolmentAscending(Integer patientId, Integer programId) {
-		SQLQuery dateOfProgramEnrolment = sessionFactory.getCurrentSession().createSQLQuery("select date_enrolled from patient_program where patient_id = :patientId and program_id = :programId and voided = 0 order by date_enrolled asc");
+	public Date getDateOfProgramEnrolmentAscending(Integer patientId, Integer programId, Date startDate, Date endDate) {
+		
+		Date sDate = new Date();
+		sDate.setTime(0);
+		
+		Date eDate = Calendar.getInstance().getTime();
+		
+		if(startDate != null)
+		{
+			sDate = startDate;
+		}
+		if(endDate != null)
+		{
+			eDate = endDate;
+		}
+		
+		SQLQuery dateOfProgramEnrolment = sessionFactory.getCurrentSession().createSQLQuery("select date_enrolled from patient_program where patient_id = :patientId and program_id = :programId and voided = 0 and date_enrolled >= :startDate and date_enrolled <= :endDate order by date_enrolled asc");
 		dateOfProgramEnrolment.setInteger("patientId", patientId);
 		dateOfProgramEnrolment.setInteger("programId", programId);
+		dateOfProgramEnrolment.setDate("startDate", sDate);
+		dateOfProgramEnrolment.setDate("endDate", eDate);
 		
 		List<Date> dateOfEnrolment = (List<Date>)dateOfProgramEnrolment.list();
 		

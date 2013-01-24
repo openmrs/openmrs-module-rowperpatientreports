@@ -13,6 +13,7 @@ import org.openmrs.module.rowperpatientreports.patientdata.definition.DateOfMost
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
 import org.openmrs.module.rowperpatientreports.patientdata.result.DateResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
+import org.openmrs.util.OpenmrsUtil;
 
 @Handler(supports={DateOfMostRecentEncounterOfType.class})
 public class DateOfMostRecentEncounterOfTypeEvaluator implements RowPerPatientDataEvaluator{
@@ -44,11 +45,14 @@ public class DateOfMostRecentEncounterOfTypeEvaluator implements RowPerPatientDa
 				
 				if(add)
 				{
-					 if (enc == null
-		                     || e.getEncounterDatetime().compareTo(enc.getEncounterDatetime()) > 0)
-					 {
-						 enc = e;
-					 }
+					if((pd.getStartDate() == null || OpenmrsUtil.compare(e.getEncounterDatetime(), pd.getStartDate()) >= 0) && (pd.getEndDate() == null || OpenmrsUtil.compare(e.getEncounterDatetime(), pd.getEndDate()) <= 0)) 
+					{
+						if (enc == null
+			                     || e.getEncounterDatetime().compareTo(enc.getEncounterDatetime()) > 0)
+						 {
+							 enc = e;
+						 }
+					}
 				}
 			}
         }

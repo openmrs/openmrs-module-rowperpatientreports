@@ -23,6 +23,13 @@ public class PatientIdentifierEvaluator implements RowPerPatientDataEvaluator{
 				par.setValue(id.getIdentifier());
 			}
 		}
+		else{
+			org.openmrs.PatientIdentifier id = pd.getPatient().getPatientIdentifier();
+			if(id != null)
+			{
+				par.setValue(id.getIdentifier());
+			}
+		}
 
 		return par;
     }
