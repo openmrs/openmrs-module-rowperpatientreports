@@ -105,10 +105,10 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 			
 			//left here for testing purposes
 			i++;
-			if(i > 10)
-			{
-				break;
-			}
+//			if(i > 10)
+//			{
+//				break;
+//			}
 					
 			for(Mapped<RowPerPatientData> mapped: definition.getColumns())
 			{
