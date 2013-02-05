@@ -1,25 +1,28 @@
 package org.openmrs.module.rowperpatientreports.patientdata.evaluator;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.rowperpatientreports.patientdata.definition.BaselineObservation;
+import org.openmrs.module.rowperpatientreports.patientdata.definition.BaselineObservationAnswer;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.DateOfPatientData;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
 import org.openmrs.module.rowperpatientreports.patientdata.result.ObservationResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
 import org.openmrs.module.rowperpatientreports.patientdata.service.RowPerPatientDataService;
 
-@Handler(supports={BaselineObservation.class})
-public class BaselineObservationEvaluator implements RowPerPatientDataEvaluator{
+@Handler(supports={BaselineObservationAnswer.class})
+public class BaselineObservationAnswerEvaluator implements RowPerPatientDataEvaluator{
 
 	protected Log log = LogFactory.getLog(this.getClass());
 	
@@ -27,7 +30,7 @@ public class BaselineObservationEvaluator implements RowPerPatientDataEvaluator{
 	    
 		ObservationResult par = new ObservationResult(patientData, context);
 		
-		BaselineObservation pd = (BaselineObservation)patientData;
+		BaselineObservationAnswer pd = (BaselineObservationAnswer)patientData;
 		par.setDateFormat(pd.getDateFormat());
 	
 		Mapped<RowPerPatientData> mapped = pd.getDateOfPatientData();
@@ -39,7 +42,6 @@ public class BaselineObservationEvaluator implements RowPerPatientDataEvaluator{
 		PatientDataResult patientDataResult = Context.getService(RowPerPatientDataService.class).evaluate(mapped, context);
 		
 		Date dateOfObs = (Date)patientDataResult.getValue();
-		
 		if(dateOfObs != null)
 		{
 			if(pd.getOffset() > 0)
@@ -69,15 +71,15 @@ public class BaselineObservationEvaluator implements RowPerPatientDataEvaluator{
 				afterDate.setTime(pd.getEndDate());
 			}
 		
-			Integer obsId = null;
+			Integer obsId;
 			
-			if(pd.getGroupConcept() != null)
+			if(pd.getQuestions() == null || pd.getQuestions().size() == 0)
 			{
-				obsId = Context.getService(RowPerPatientDataService.class).getDao().getObsValueBetweenDates(pd.getPatientId(), pd.getConcept().getConceptId(), pd.getGroupConcept().getConceptId(), beforeDate.getTime(), afterDate.getTime(), dateOfObs);
+				obsId =  Context.getService(RowPerPatientDataService.class).getDao().getObsAnswerBetweenDates(pd.getPatientId(), pd.getAnswer().getConceptId(), beforeDate.getTime(), afterDate.getTime(), dateOfObs);
 			}
 			else
 			{
-				obsId = Context.getService(RowPerPatientDataService.class).getDao().getObsValueBetweenDates(pd.getPatientId(), pd.getConcept().getConceptId(), beforeDate.getTime(), afterDate.getTime(), dateOfObs);
+				obsId =  Context.getService(RowPerPatientDataService.class).getDao().getObsAnswerBetweenDates(pd.getPatientId(), getListOfConceptIds(pd.getQuestions()), pd.getAnswer().getConceptId(), beforeDate.getTime(), afterDate.getTime(), dateOfObs);
 			}
 			
 			if(obsId != null)
@@ -93,4 +95,14 @@ public class BaselineObservationEvaluator implements RowPerPatientDataEvaluator{
 		
 		return par;
     }
+	
+	private List<Integer> getListOfConceptIds(List<Concept> questions)
+	{
+		List<Integer> ids = new ArrayList<Integer>();
+		for(Concept c: questions)
+		{
+			ids.add(c.getConceptId());
+		}
+		return ids;
+	}
 }

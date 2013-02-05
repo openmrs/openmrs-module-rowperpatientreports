@@ -1,6 +1,9 @@
 package org.openmrs.module.rowperpatientreports.patientdata.definition;
 
+import java.util.Date;
+
 import org.openmrs.Concept;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 
 
@@ -11,6 +14,14 @@ public class AllObservationValues extends BasePatientData implements RowPerPatie
 	private ResultFilter filter;
 	
 	private ResultFilter outputFilter;
+	
+	private int minResultsOutput = -1;
+	
+	@ConfigurationProperty
+	private Date startDate = null;
+	
+	@ConfigurationProperty
+	private Date endDate = null;
 
 	
     /**
@@ -52,4 +63,28 @@ public class AllObservationValues extends BasePatientData implements RowPerPatie
 	public void setOutputFilter(ResultFilter outputFilter) {
 		this.outputFilter = outputFilter;
 	}
+	
+    public Date getStartDate() {
+    	return startDate;
+    }
+	
+    public void setStartDate(Date startDate) {
+    	this.startDate = startDate;
+    }
+	
+    public Date getEndDate() {
+    	return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+    	this.endDate = endDate;
+    }
+	
+    public int getMinResultsOutput() {
+    	return minResultsOutput;
+    }
+
+    public void setMinResultsOutput(int minResultsOutput) {
+    	this.minResultsOutput = minResultsOutput;
+    }
 }

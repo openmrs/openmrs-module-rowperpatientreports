@@ -1,6 +1,7 @@
 package org.openmrs.module.rowperpatientreports.patientdata.definition;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.openmrs.Concept;
@@ -9,9 +10,11 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 
 
 
-public class BaselineObservation extends BasePatientData implements RowPerPatientData, DateOfPatientData {
+public class BaselineObservationAnswer extends BasePatientData implements RowPerPatientData, DateOfPatientData {
 
-private Concept concept;
+	private Concept answer;
+	
+	private List<Concept> questions;
 	
 	private Mapped<RowPerPatientData> dateOfPatientData;
 	
@@ -19,37 +22,36 @@ private Concept concept;
 	
 	private int after;
 	
-	private int offset = 0;
+	private int offset;
 	
 	private int offsetType;
 	
 	private String dateFormat = "yyyy-MM-dd";
-	
-	private Concept groupConcept;
 	
 	@ConfigurationProperty
 	private Date startDate;
 	
 	@ConfigurationProperty
 	private Date endDate;
+	
 
     /**
      * @return the concept
      */
-    public Concept getConcept() {
-    	return concept;
+    public Concept getAnswer() {
+    	return answer;
     }
 
 	
     /**
      * @param concept the concept to set
      */
-    public void setConcept(Concept concept) {
-    	this.concept = concept;
-    	if(concept != null)
+    public void setAnswer(Concept answer) {
+    	this.answer = answer;
+    	if(answer != null)
     	{
-    		setName(concept.getName().getName());
-    		setDescription(concept.getDisplayString());
+    		setName(answer.getName().getName());
+    		setDescription(answer.getDisplayString());
     	}
     }
 
@@ -115,20 +117,18 @@ private Concept concept;
 
 
 	
-    public Concept getGroupConcept() {
-    	return groupConcept;
+    public List<Concept> getQuestions() {
+    	return questions;
     }
 
-
-	
-    public void setGroupConcept(Concept groupConcept) {
-    	this.groupConcept = groupConcept;
+    public void setQuestions(List<Concept> questions) {
+    	this.questions = questions;
     }
-    
+
     public int getOffset() {
     	return offset;
     }
-
+	
     public int getOffsetType() {
     	return offsetType;
     }
@@ -138,11 +138,15 @@ private Concept concept;
     	this.offset = offset;
     	this.offsetType = offsetType;
     }
+
+
 	
     public Date getStartDate() {
     	return startDate;
     }
 
+
+	
     public void setStartDate(Date startDate) {
     	this.startDate = startDate;
     }
@@ -157,5 +161,7 @@ private Concept concept;
 	
     public void setEndDate(Date endDate) {
     	this.endDate = endDate;
-    }    
+    }
+
+    
 }

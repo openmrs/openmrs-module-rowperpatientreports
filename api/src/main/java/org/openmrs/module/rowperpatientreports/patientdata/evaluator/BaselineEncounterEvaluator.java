@@ -1,33 +1,36 @@
 package org.openmrs.module.rowperpatientreports.patientdata.evaluator;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Obs;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.rowperpatientreports.patientdata.definition.BaselineObservation;
+import org.openmrs.module.rowperpatientreports.patientdata.definition.BaselineEncounter;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.DateOfPatientData;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
-import org.openmrs.module.rowperpatientreports.patientdata.result.ObservationResult;
+import org.openmrs.module.rowperpatientreports.patientdata.result.EncounterResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
 import org.openmrs.module.rowperpatientreports.patientdata.service.RowPerPatientDataService;
 
-@Handler(supports={BaselineObservation.class})
-public class BaselineObservationEvaluator implements RowPerPatientDataEvaluator{
+@Handler(supports={BaselineEncounter.class})
+public class BaselineEncounterEvaluator implements RowPerPatientDataEvaluator{
 
 	protected Log log = LogFactory.getLog(this.getClass());
 	
 	public PatientDataResult evaluate(RowPerPatientData patientData, EvaluationContext context) throws EvaluationException{
 	    
-		ObservationResult par = new ObservationResult(patientData, context);
+		EncounterResult par = new EncounterResult(patientData, context);
 		
-		BaselineObservation pd = (BaselineObservation)patientData;
+		BaselineEncounter pd = (BaselineEncounter)patientData;
 		par.setDateFormat(pd.getDateFormat());
 	
 		Mapped<RowPerPatientData> mapped = pd.getDateOfPatientData();
@@ -69,24 +72,24 @@ public class BaselineObservationEvaluator implements RowPerPatientDataEvaluator{
 				afterDate.setTime(pd.getEndDate());
 			}
 		
-			Integer obsId = null;
+			Integer encId = null;
 			
-			if(pd.getGroupConcept() != null)
+			List<Integer> encounterIds = new ArrayList<Integer>();
+			for(EncounterType et: pd.getEncounterTypes())
 			{
-				obsId = Context.getService(RowPerPatientDataService.class).getDao().getObsValueBetweenDates(pd.getPatientId(), pd.getConcept().getConceptId(), pd.getGroupConcept().getConceptId(), beforeDate.getTime(), afterDate.getTime(), dateOfObs);
+				encounterIds.add(et.getId());
 			}
-			else
-			{
-				obsId = Context.getService(RowPerPatientDataService.class).getDao().getObsValueBetweenDates(pd.getPatientId(), pd.getConcept().getConceptId(), beforeDate.getTime(), afterDate.getTime(), dateOfObs);
-			}
+ 			
 			
-			if(obsId != null)
+			encId = Context.getService(RowPerPatientDataService.class).getDao().getEncounterBetweenDates(pd.getPatientId(), encounterIds, beforeDate.getTime(), afterDate.getTime(), dateOfObs);
+			
+			if(encId != null)
 			{
-				Obs obResult = Context.getObsService().getObs(obsId);
+				Encounter encResult = Context.getEncounterService().getEncounter(encId);
 				
-				if(obResult != null)
+				if(encResult != null)
 				{	
-					par.setObs(obResult);
+					par.setValue(encResult);
 				}
 			}
 		}

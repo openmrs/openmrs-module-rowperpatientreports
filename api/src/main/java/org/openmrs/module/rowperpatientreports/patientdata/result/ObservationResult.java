@@ -71,7 +71,17 @@ public class ObservationResult extends BasePatientDataResult {
 
     public String getValueAsString() {
 		
-	    return getValue() + " " + new SimpleDateFormat(dateFormat).format(dateOfObservation);
+	    if(getValue() != null && dateOfObservation != null)
+	    {
+	    	return getValue() + " " + new SimpleDateFormat(dateFormat).format(dateOfObservation);
+	    }
+	    else if(getValue() != null)
+	    {
+	    	return getValue();
+	    }
+    	
+	    return null;
+    	
     }
 
 	public String getDateFormat() {

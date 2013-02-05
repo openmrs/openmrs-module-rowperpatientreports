@@ -3,16 +3,14 @@ package org.openmrs.module.rowperpatientreports.patientdata.definition;
 import java.util.Date;
 import java.util.Map;
 
-import org.openmrs.Concept;
+import org.openmrs.Program;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 
 
 
-public class BaselineObservation extends BasePatientData implements RowPerPatientData, DateOfPatientData {
+public class BaselineProgramEnrollment extends BasePatientData implements RowPerPatientData, DateOfPatientData {
 
-private Concept concept;
-	
 	private Mapped<RowPerPatientData> dateOfPatientData;
 	
 	private int before;
@@ -25,7 +23,7 @@ private Concept concept;
 	
 	private String dateFormat = "yyyy-MM-dd";
 	
-	private Concept groupConcept;
+	private Program program;
 	
 	@ConfigurationProperty
 	private Date startDate;
@@ -33,28 +31,6 @@ private Concept concept;
 	@ConfigurationProperty
 	private Date endDate;
 
-    /**
-     * @return the concept
-     */
-    public Concept getConcept() {
-    	return concept;
-    }
-
-	
-    /**
-     * @param concept the concept to set
-     */
-    public void setConcept(Concept concept) {
-    	this.concept = concept;
-    	if(concept != null)
-    	{
-    		setName(concept.getName().getName());
-    		setDescription(concept.getDisplayString());
-    	}
-    }
-
-
-	
     /**
      * @return the dateOfPatientData
      */
@@ -112,18 +88,6 @@ private Concept concept;
     public void setAfter(int after) {
     	this.after = after;
     }
-
-
-	
-    public Concept getGroupConcept() {
-    	return groupConcept;
-    }
-
-
-	
-    public void setGroupConcept(Concept groupConcept) {
-    	this.groupConcept = groupConcept;
-    }
     
     public int getOffset() {
     	return offset;
@@ -146,16 +110,20 @@ private Concept concept;
     public void setStartDate(Date startDate) {
     	this.startDate = startDate;
     }
-
-
 	
     public Date getEndDate() {
     	return endDate;
     }
-
-
 	
     public void setEndDate(Date endDate) {
     	this.endDate = endDate;
-    }    
+    }
+	
+    public Program getProgram() {
+    	return program;
+    }
+
+    public void setProgram(Program program) {
+    	this.program = program;
+    }  
 }

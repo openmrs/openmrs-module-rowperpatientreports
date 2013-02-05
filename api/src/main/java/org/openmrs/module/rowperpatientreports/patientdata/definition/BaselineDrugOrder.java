@@ -9,11 +9,17 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 
 
 
-public class BaselineObservation extends BasePatientData implements RowPerPatientData, DateOfPatientData {
+public class BaselineDrugOrder extends BasePatientData implements RowPerPatientData, DateOfPatientData {
 
 private Concept concept;
 	
 	private Mapped<RowPerPatientData> dateOfPatientData;
+	
+	@ConfigurationProperty
+	private Date endDate = null;
+	
+	@ConfigurationProperty
+	private Date startDate = null;
 	
 	private int before;
 	
@@ -25,13 +31,7 @@ private Concept concept;
 	
 	private String dateFormat = "yyyy-MM-dd";
 	
-	private Concept groupConcept;
-	
-	@ConfigurationProperty
-	private Date startDate;
-	
-	@ConfigurationProperty
-	private Date endDate;
+	private Concept drugConcept;
 
     /**
      * @return the concept
@@ -39,7 +39,6 @@ private Concept concept;
     public Concept getConcept() {
     	return concept;
     }
-
 	
     /**
      * @param concept the concept to set
@@ -52,8 +51,6 @@ private Concept concept;
     		setDescription(concept.getDisplayString());
     	}
     }
-
-
 	
     /**
      * @return the dateOfPatientData
@@ -61,8 +58,6 @@ private Concept concept;
     public Mapped<RowPerPatientData> getDateOfPatientData() {
     	return dateOfPatientData;
     }
-
-
 	
     /**
      * @param dateOfPatientData the dateOfPatientData to set
@@ -70,8 +65,6 @@ private Concept concept;
     public void setDateOfPatientData(DateOfPatientData dateOfPatientData, Map<String, Object> mappings) {
     	this.dateOfPatientData = new Mapped<RowPerPatientData>(dateOfPatientData, mappings);
     }
-
-
 	
     /**
      * @return the dateFormat
@@ -79,8 +72,6 @@ private Concept concept;
     public String getDateFormat() {
     	return dateFormat;
     }
-
-
 	
     /**
      * @param dateFormat the dateFormat to set
@@ -88,41 +79,29 @@ private Concept concept;
     public void setDateFormat(String dateFormat) {
     	this.dateFormat = dateFormat;
     }
-
-
 	
     public int getBefore() {
     	return before;
     }
-
-
 	
     public void setBefore(int before) {
     	this.before = before;
     }
-
-
 	
     public int getAfter() {
     	return after;
     }
-
-
 	
     public void setAfter(int after) {
     	this.after = after;
     }
-
-
 	
-    public Concept getGroupConcept() {
-    	return groupConcept;
+    public Concept getDrugConcept() {
+    	return drugConcept;
     }
-
-
 	
-    public void setGroupConcept(Concept groupConcept) {
-    	this.groupConcept = groupConcept;
+    public void setDrugConcept(Concept drugConcept) {
+    	this.drugConcept = drugConcept;
     }
     
     public int getOffset() {
@@ -132,30 +111,25 @@ private Concept concept;
     public int getOffsetType() {
     	return offsetType;
     }
-
 	
     public void setOffset(int offset, int offsetType) {
     	this.offset = offset;
     	this.offsetType = offsetType;
     }
 	
-    public Date getStartDate() {
-    	return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-    	this.startDate = startDate;
-    }
-
-
-	
     public Date getEndDate() {
     	return endDate;
     }
-
-
 	
     public void setEndDate(Date endDate) {
     	this.endDate = endDate;
-    }    
+    }
+
+    public Date getStartDate() {
+    	return startDate;
+    }
+    
+    public void setStartDate(Date startDate) {
+    	this.startDate = startDate;
+    }
 }
