@@ -288,6 +288,23 @@ public class HibernateRowPerPatientReportDAO implements RowPerPatientReportDAO{
 	    return null;
     }
 	
+	public Integer getEncounterBetweenDates(Integer patientId, List<Integer> encounterTypes, Date beforeDate, Date afterDate, Date targetDate) {
+		SQLQuery obsBeforeDate = sessionFactory.getCurrentSession().createSQLQuery("select encounter_id from encounter where patient_id = :patientId and encounter_type in (:encounterTypes) and voided = 0 and encounter_datetime > :beforeDate and encounter_datetime < :afterDate ORDER BY abs(:targetDate - encounter_datetime)");
+		obsBeforeDate.setInteger("patientId", patientId);
+		obsBeforeDate.setDate("beforeDate", beforeDate);
+		obsBeforeDate.setDate("afterDate", afterDate);
+		obsBeforeDate.setDate("targetDate", targetDate);
+		obsBeforeDate.setParameterList("encounterTypes", encounterTypes);
+		
+		List<Integer> obs = obsBeforeDate.list();
+		if(obs != null && obs.size() > 0)
+		{
+			return obs.get(0);
+		}
+		
+	    return null;
+    }
+	
 	public Date getDateOfProgramEnrolmentAscending(Integer patientId, Integer programId, Date startDate, Date endDate) {
 		
 		Date sDate = new Date();

@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
+import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -40,6 +41,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.rowperpatientreports.dataset.definition.RowPerPatientDataSetDefinition;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
 import org.openmrs.module.rowperpatientreports.patientdata.result.AllDrugOrdersResult;
+import org.openmrs.module.rowperpatientreports.patientdata.result.AllObservationValuesResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.DateValueResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.DrugOrdersResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.EncounterResult;
@@ -225,12 +227,6 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 			DataSetColumn c3 = new DataSetColumn(patientDataResult.getName() + " EndDate", patientDataResult.getDescription() + " EndDate", String.class);
 			row.addColumnValue(c3, endDate);
 		}
-		//set up SimpleDataSet column value for evaluated patientData
-		else if(patientDataResult.isMultiple())
-		{
-			DataSetColumn c = new DataSetColumn(patientDataResult.getName(), patientDataResult.getDescription(), String.class);
-			row.addColumnValue(c, patientDataResult.getValueAsString());
-		}
 		//if it is an observation result we are also going to include the date as a column, so that the 
 		//values don't need to be retrieved twice
 		else if(patientDataResult instanceof ObservationResult)
@@ -249,6 +245,52 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 			{
 				row.addColumnValue(d, null);
 			}
+		}
+		else if(patientDataResult instanceof AllObservationValuesResult)
+		{
+			DataSetColumn cc = new DataSetColumn(patientDataResult.getName(), patientDataResult.getDescription(), String.class);
+			row.addColumnValue(cc, patientDataResult.getValueAsString());
+			
+			AllObservationValuesResult obsRes = (AllObservationValuesResult)patientDataResult;
+			
+			if(obsRes.getValue() != null)
+			{
+				int i = 1;
+				for(Obs o: obsRes.getValue())
+				{
+					DataSetColumn c = new DataSetColumn(patientDataResult.getName() + i, patientDataResult.getDescription(), patientDataResult.getColumnClass());
+					row.addColumnValue(c, o.getValueAsString(Context.getLocale()));
+					
+					DataSetColumn d = new DataSetColumn(patientDataResult.getName() + i + " Date", patientDataResult.getDescription() + " Date", String.class);
+					if(o.getObsDatetime() != null)
+					{
+						row.addColumnValue(d, new SimpleDateFormat(obsRes.getDateFormat()).format(o.getObsDatetime()));
+					}
+					else
+					{
+						row.addColumnValue(d, null);
+					}
+					i++;
+				}
+				
+				if(i < obsRes.getMinResultsOutput())
+				{
+					for(int j = i; j <= obsRes.getMinResultsOutput(); j++)
+					{
+						DataSetColumn c = new DataSetColumn(patientDataResult.getName() + j, patientDataResult.getDescription(), patientDataResult.getColumnClass());
+						row.addColumnValue(c, null);
+						
+						DataSetColumn d = new DataSetColumn(patientDataResult.getName() + j + " Date", patientDataResult.getDescription() + " Date", String.class);
+						row.addColumnValue(d, null);
+					}
+				}
+			}
+		}
+		//set up SimpleDataSet column value for evaluated patientData
+		else if(patientDataResult.isMultiple())
+		{
+			DataSetColumn c = new DataSetColumn(patientDataResult.getName(), patientDataResult.getDescription(), String.class);
+			row.addColumnValue(c, patientDataResult.getValueAsString());
 		}
 		else if(patientDataResult instanceof DateValueResult)
 		{

@@ -3,8 +3,6 @@ package org.openmrs.module.rowperpatientreports.service.db;
 import java.util.Date;
 import java.util.List;
 
-import org.openmrs.Concept;
-
 
 public interface RowPerPatientReportDAO {
 	
@@ -35,6 +33,8 @@ public interface RowPerPatientReportDAO {
 	public Integer getObsValueBetweenDates(Integer patientId, Integer conceptId, Integer groupId, Date beforeDate, Date afterDate, Date targetDate);
 
 	public Integer getObsAnswerBetweenDates(Integer patientId, List<Integer> questions, Integer answerId, Date beforeDate, Date afterDate, Date targetDate);
+	
+	public Integer getEncounterBetweenDates(Integer patientId, List<Integer> encounterTypes, Date beforeDate, Date afterDate, Date targetDate);
 	
 	public Integer getObsAnswerBetweenDates(Integer patientId, Integer answerId, Date beforeDate, Date afterDate, Date targetDate);
 }

@@ -1,8 +1,10 @@
 package org.openmrs.module.rowperpatientreports.patientdata.definition;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.openmrs.Concept;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 
 
@@ -24,6 +26,12 @@ private Concept concept;
 	private String dateFormat = "yyyy-MM-dd";
 	
 	private Concept groupConcept;
+	
+	@ConfigurationProperty
+	private Date startDate;
+	
+	@ConfigurationProperty
+	private Date endDate;
 
     /**
      * @return the concept
@@ -130,6 +138,24 @@ private Concept concept;
     	this.offset = offset;
     	this.offsetType = offsetType;
     }
+	
+    public Date getStartDate() {
+    	return startDate;
+    }
 
-    
+    public void setStartDate(Date startDate) {
+    	this.startDate = startDate;
+    }
+
+
+	
+    public Date getEndDate() {
+    	return endDate;
+    }
+
+
+	
+    public void setEndDate(Date endDate) {
+    	this.endDate = endDate;
+    }    
 }

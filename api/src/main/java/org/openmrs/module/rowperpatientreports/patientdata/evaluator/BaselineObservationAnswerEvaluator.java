@@ -57,9 +57,19 @@ public class BaselineObservationAnswerEvaluator implements RowPerPatientDataEval
 			beforeDate.setTime(dateOfObs);
 			beforeDate.add(Calendar.DAY_OF_YEAR, -pd.getBefore());
 			
+			if(pd.getStartDate() != null && pd.getStartDate().after(beforeDate.getTime()))
+			{
+				beforeDate.setTime(pd.getStartDate());
+			}
+			
 			Calendar afterDate = Calendar.getInstance();
 			afterDate.setTime(dateOfObs);
 			afterDate.add(Calendar.DAY_OF_YEAR, pd.getAfter());
+			
+			if(pd.getEndDate() != null && pd.getEndDate().before(afterDate.getTime()))
+			{
+				afterDate.setTime(pd.getEndDate());
+			}
 		
 			Integer obsId;
 			

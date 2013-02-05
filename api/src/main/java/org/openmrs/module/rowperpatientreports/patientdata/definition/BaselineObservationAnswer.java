@@ -1,9 +1,11 @@
 package org.openmrs.module.rowperpatientreports.patientdata.definition;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.openmrs.Concept;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 
 
@@ -25,6 +27,12 @@ public class BaselineObservationAnswer extends BasePatientData implements RowPer
 	private int offsetType;
 	
 	private String dateFormat = "yyyy-MM-dd";
+	
+	@ConfigurationProperty
+	private Date startDate;
+	
+	@ConfigurationProperty
+	private Date endDate;
 	
 
     /**
@@ -131,4 +139,29 @@ public class BaselineObservationAnswer extends BasePatientData implements RowPer
     	this.offsetType = offsetType;
     }
 
+
+	
+    public Date getStartDate() {
+    	return startDate;
+    }
+
+
+	
+    public void setStartDate(Date startDate) {
+    	this.startDate = startDate;
+    }
+
+
+	
+    public Date getEndDate() {
+    	return endDate;
+    }
+
+
+	
+    public void setEndDate(Date endDate) {
+    	this.endDate = endDate;
+    }
+
+    
 }
