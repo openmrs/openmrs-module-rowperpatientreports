@@ -1,15 +1,18 @@
 package org.openmrs.module.rowperpatientreports.patientdata.definition;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 
 
-public class DateOfWorkflowStateChange extends BasePatientData implements DateOfPatientData {
 
-	private Concept concept;
+public class DateOfMostRecentEncounterOfType extends BasePatientData implements DateOfPatientData {
+
+	private List<EncounterType> encounterTypes = new ArrayList<EncounterType>();
 	
 	private String dateFormat = "yyyy-MM-dd";
 	
@@ -19,21 +22,6 @@ public class DateOfWorkflowStateChange extends BasePatientData implements DateOf
 	@ConfigurationProperty
 	private Date startDate = null;
 
-	
-    /**
-     * @return the concept
-     */
-    public Concept getConcept() {
-    	return concept;
-    }
-
-	
-    /**
-     * @param concept the concept to set
-     */
-    public void setConcept(Concept concept) {
-    	this.concept = concept;
-    }
 
     public void setDateFormat(String dateFormat) {
 	    this.dateFormat = dateFormat;
@@ -44,13 +32,23 @@ public class DateOfWorkflowStateChange extends BasePatientData implements DateOf
 	    return dateFormat;
     }
 
+    public List<EncounterType> getEncounterTypes() {
+		return encounterTypes;
+	}
 
+	public void setEncounterTypes(List<EncounterType> encounterTypes) {
+		this.encounterTypes = encounterTypes;
+		
+	}
+	
+	public void addEncounterType(EncounterType encounterType)
+	{
+		encounterTypes.add(encounterType);
+	}
 	
     public Date getEndDate() {
     	return endDate;
     }
-
-
 	
     public void setEndDate(Date endDate) {
     	this.endDate = endDate;
@@ -62,5 +60,5 @@ public class DateOfWorkflowStateChange extends BasePatientData implements DateOf
 
     public void setStartDate(Date startDate) {
     	this.startDate = startDate;
-    }	
+    }
 }

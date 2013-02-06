@@ -22,6 +22,8 @@ public class AllObservationValuesResult extends BasePatientDataResult {
 	
 	private ResultFilter filter = null;
 	
+	private int minResultsOutput = -1;
+	
 	public AllObservationValuesResult(RowPerPatientData patientData, EvaluationContext ec) {
 	    super(patientData, ec);
 	    dateFormat = patientData.getDateFormat();
@@ -81,4 +83,22 @@ public class AllObservationValuesResult extends BasePatientDataResult {
 	public void setFilter(ResultFilter filter) {
 		this.filter = filter;
 	}
+	
+    public String getDateFormat() {
+    	return dateFormat;
+    }
+
+    public void setDateFormat(String dateFormat) {
+    	this.dateFormat = dateFormat;
+    }
+
+	
+    public int getMinResultsOutput() {
+    	return minResultsOutput;
+    }
+
+	
+    public void setMinResultsOutput(int minResultsOutput) {
+    	this.minResultsOutput = minResultsOutput;
+    }
 }

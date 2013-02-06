@@ -26,7 +26,7 @@ public class IsEnrolledInProgramEvaluator implements RowPerPatientDataEvaluator{
 
 		if(pd.getProgramId() > -1)
 		{
-			Date programEnrolment = Context.getService(RowPerPatientDataService.class).getDao().getDateOfProgramEnrolment(pd.getPatientId(), pd.getProgramId());
+			Date programEnrolment = Context.getService(RowPerPatientDataService.class).getDao().getDateOfProgramEnrolment(pd.getPatientId(), pd.getProgramId(), null, null);
 			if(programEnrolment == null)
 			{
 				result.setValue("Not Enrolled");

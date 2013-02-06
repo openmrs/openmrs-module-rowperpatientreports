@@ -29,11 +29,11 @@ public class DateOfProgramEnrolmentEvaluator implements RowPerPatientDataEvaluat
 		Date programEnrolment = null;
 		if(pd.isReturnEarliest())
 		{
-			programEnrolment = Context.getService(RowPerPatientDataService.class).getDao().getDateOfProgramEnrolmentAscending(pd.getPatientId(), pd.getProgramId());
+			programEnrolment = Context.getService(RowPerPatientDataService.class).getDao().getDateOfProgramEnrolmentAscending(pd.getPatientId(), pd.getProgramId(), pd.getStartDate(), pd.getEndDate());
 		}
 		else
 		{
-			programEnrolment = Context.getService(RowPerPatientDataService.class).getDao().getDateOfProgramEnrolment(pd.getPatientId(), pd.getProgramId());
+			programEnrolment = Context.getService(RowPerPatientDataService.class).getDao().getDateOfProgramEnrolment(pd.getPatientId(), pd.getProgramId(), pd.getStartDate(), pd.getEndDate());
 		}
 		
 		result.setValue(programEnrolment);

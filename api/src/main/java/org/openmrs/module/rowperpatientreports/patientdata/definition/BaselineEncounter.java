@@ -1,17 +1,17 @@
 package org.openmrs.module.rowperpatientreports.patientdata.definition;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
-import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 
 
 
-public class BaselineObservation extends BasePatientData implements RowPerPatientData, DateOfPatientData {
+public class BaselineEncounter extends BasePatientData implements RowPerPatientData, DateOfPatientData {
 
-private Concept concept;
 	
 	private Mapped<RowPerPatientData> dateOfPatientData;
 	
@@ -25,7 +25,7 @@ private Concept concept;
 	
 	private String dateFormat = "yyyy-MM-dd";
 	
-	private Concept groupConcept;
+	private List<EncounterType> encounterTypes;
 	
 	@ConfigurationProperty
 	private Date startDate;
@@ -33,27 +33,7 @@ private Concept concept;
 	@ConfigurationProperty
 	private Date endDate;
 
-    /**
-     * @return the concept
-     */
-    public Concept getConcept() {
-    	return concept;
-    }
-
-	
-    /**
-     * @param concept the concept to set
-     */
-    public void setConcept(Concept concept) {
-    	this.concept = concept;
-    	if(concept != null)
-    	{
-    		setName(concept.getName().getName());
-    		setDescription(concept.getDisplayString());
-    	}
-    }
-
-
+   
 	
     /**
      * @return the dateOfPatientData
@@ -112,18 +92,6 @@ private Concept concept;
     public void setAfter(int after) {
     	this.after = after;
     }
-
-
-	
-    public Concept getGroupConcept() {
-    	return groupConcept;
-    }
-
-
-	
-    public void setGroupConcept(Concept groupConcept) {
-    	this.groupConcept = groupConcept;
-    }
     
     public int getOffset() {
     	return offset;
@@ -147,15 +115,19 @@ private Concept concept;
     	this.startDate = startDate;
     }
 
-
-	
     public Date getEndDate() {
     	return endDate;
     }
-
-
 	
     public void setEndDate(Date endDate) {
     	this.endDate = endDate;
-    }    
+    }
+
+    public List<EncounterType> getEncounterTypes() {
+    	return encounterTypes;
+    }
+	
+    public void setEncounterTypes(List<EncounterType> encounterTypes) {
+    	this.encounterTypes = encounterTypes;
+    }   
 }

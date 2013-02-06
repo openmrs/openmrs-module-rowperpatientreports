@@ -33,7 +33,7 @@ public class DateOfMultipleWorkflowStateChangeEvaluator implements RowPerPatient
 			conceptIds.add(stateConcept.getConceptId());
 		}
 
-		Date workflowChange = Context.getService(RowPerPatientDataService.class).getDao().getDateOfWorkflowStateChange(pd.getPatientId(), conceptIds);
+		Date workflowChange = Context.getService(RowPerPatientDataService.class).getDao().getDateOfWorkflowStateChange(pd.getPatientId(), conceptIds, pd.getStartDate(), pd.getEndDate());
 		
 		result.setValue(workflowChange);
 		

@@ -39,6 +39,11 @@ public class PatientPropertyResult extends BasePatientDataResult {
     
    
     public String getValueAsString() {
-	    return value.toString();
+	    if(value != null)
+	    {
+	    	return value.toString();
+	    }
+	    
+	    return "";
     }
 }

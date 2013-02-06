@@ -2,32 +2,37 @@ package org.openmrs.module.rowperpatientreports.patientdata.evaluator;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.DrugOrder;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.rowperpatientreports.patientdata.definition.BaselineDrugOrder;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.BaselineObservation;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.DateOfPatientData;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
+import org.openmrs.module.rowperpatientreports.patientdata.result.DrugOrdersResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.ObservationResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
 import org.openmrs.module.rowperpatientreports.patientdata.service.RowPerPatientDataService;
+import org.openmrs.util.OpenmrsUtil;
 
-@Handler(supports={BaselineObservation.class})
-public class BaselineObservationEvaluator implements RowPerPatientDataEvaluator{
+@Handler(supports={BaselineDrugOrder.class})
+public class BaselineDrugOrderEvaluator implements RowPerPatientDataEvaluator{
 
 	protected Log log = LogFactory.getLog(this.getClass());
 	
 	public PatientDataResult evaluate(RowPerPatientData patientData, EvaluationContext context) throws EvaluationException{
 	    
-		ObservationResult par = new ObservationResult(patientData, context);
+		DrugOrdersResult par = new DrugOrdersResult(patientData, context);
 		
-		BaselineObservation pd = (BaselineObservation)patientData;
+		BaselineDrugOrder pd = (BaselineDrugOrder)patientData;
 		par.setDateFormat(pd.getDateFormat());
 	
 		Mapped<RowPerPatientData> mapped = pd.getDateOfPatientData();
@@ -55,42 +60,40 @@ public class BaselineObservationEvaluator implements RowPerPatientDataEvaluator{
 			beforeDate.setTime(dateOfObs);
 			beforeDate.add(Calendar.DAY_OF_YEAR, -pd.getBefore());
 			
-			if(pd.getStartDate() != null && pd.getStartDate().after(beforeDate.getTime()))
-			{
-				beforeDate.setTime(pd.getStartDate());
-			}
-			
 			Calendar afterDate = Calendar.getInstance();
 			afterDate.setTime(dateOfObs);
 			afterDate.add(Calendar.DAY_OF_YEAR, pd.getAfter());
-			
-			if(pd.getEndDate() != null && pd.getEndDate().before(afterDate.getTime()))
-			{
-				afterDate.setTime(pd.getEndDate());
-			}
 		
-			Integer obsId = null;
-			
-			if(pd.getGroupConcept() != null)
+			if(pd.getDrugConcept() != null)
 			{
-				obsId = Context.getService(RowPerPatientDataService.class).getDao().getObsValueBetweenDates(pd.getPatientId(), pd.getConcept().getConceptId(), pd.getGroupConcept().getConceptId(), beforeDate.getTime(), afterDate.getTime(), dateOfObs);
-			}
-			else
-			{
-				obsId = Context.getService(RowPerPatientDataService.class).getDao().getObsValueBetweenDates(pd.getPatientId(), pd.getConcept().getConceptId(), beforeDate.getTime(), afterDate.getTime(), dateOfObs);
-			}
-			
-			if(obsId != null)
-			{
-				Obs obResult = Context.getObsService().getObs(obsId);
+				List<DrugOrder> orders = Context.getOrderService().getDrugOrdersByPatient(pd.getPatient());
 				
-				if(obResult != null)
-				{	
-					par.setObs(obResult);
+				for(DrugOrder order: orders)
+				{
+					if(order.getDrug().getConcept().equals(pd.getDrugConcept()))
+					{
+						if((pd.getStartDate() == null || OpenmrsUtil.compare(order.getStartDate(), pd.getStartDate()) >=0) && (pd.getEndDate() == null || OpenmrsUtil.compare(order.getStartDate(), pd.getEndDate()) <=0))
+						{
+							if(OpenmrsUtil.compare(afterDate.getTime(), order.getStartDate()) >=0)
+							{
+								if(!order.getDiscontinued() || order.getAutoExpireDate() == null) 
+								{
+									par.setValue(order);
+								}
+								else if(OpenmrsUtil.compare(order.getDiscontinuedDate(), beforeDate.getTime()) >=0)
+								{
+									par.setValue(order);
+								}
+								else if(OpenmrsUtil.compare(order.getAutoExpireDate(), beforeDate.getTime()) >=0)
+								{
+									par.setValue(order);
+								}
+							}
+						}
+					}
 				}
 			}
 		}
-		
 		return par;
     }
 }
