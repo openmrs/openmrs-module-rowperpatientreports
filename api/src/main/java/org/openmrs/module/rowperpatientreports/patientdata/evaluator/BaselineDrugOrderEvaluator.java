@@ -70,7 +70,7 @@ public class BaselineDrugOrderEvaluator implements RowPerPatientDataEvaluator{
 				
 				for(DrugOrder order: orders)
 				{
-					if(order.getDrug().getConcept().equals(pd.getDrugConcept()))
+					if(order.getDrug() != null && order.getDrug().getConcept() != null && order.getDrug().getConcept().equals(pd.getDrugConcept()))
 					{
 						if((pd.getStartDate() == null || OpenmrsUtil.compare(order.getStartDate(), pd.getStartDate()) >=0) && (pd.getEndDate() == null || OpenmrsUtil.compare(order.getStartDate(), pd.getEndDate()) <=0))
 						{
