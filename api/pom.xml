@@ -11,6 +11,4 @@
 	<packaging>jar</packaging>
 	<name>Row Per Patient Reports API</name>
 	<description>API project for Row Per Patient Reports</description>
-
-
 </project>
