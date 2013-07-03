@@ -12,9 +12,10 @@
 	<url>http://openmrs.org</url>
 
 	<scm>
-		<connection>scm:svn:http://svn.openmrs.org/openmrs-modules/rowperpatientreports/trunk/</connection>
-		<developerConnection>scm:svn:http://svn.openmrs.org/openmrs-modules/rowperpatientreports/trunk/</developerConnection>
-		<url>http://svn.openmrs.org/openmrs-modules/rowperpatientreports/trunk/</url>
+		<connection>scm:git:https://github.com/openmrs/openmrs-module-rowperpatientreports/</connection>
+		<developerConnection>scm:git:https://github.com/openmrs/openmrs-module-rowperpatientreports/</developerConnection>
+		<url>https://github.com/openmrs/openmrs-module-rowperpatientreports/</url>
+		<tag>HEAD</tag>
 	</scm>
 
 	<modules>
