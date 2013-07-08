@@ -8,7 +8,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 public class DateDiff extends BasePatientData implements RowPerPatientData {
-
+//this should be a list of encounter types we are concerned about
 	private List<EncounterType> encounterTypes=null;
 	private Concept concept;
 	public enum DateDiffType {
