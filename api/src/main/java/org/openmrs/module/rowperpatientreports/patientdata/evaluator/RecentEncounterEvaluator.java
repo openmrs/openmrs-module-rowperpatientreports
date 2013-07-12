@@ -72,8 +72,10 @@ public PatientDataResult evaluate(RowPerPatientData patientsData, EvaluationCont
 		
 		if(pd.getFilter() != null && enc != null)
 		{
-			encountertype = (String)pd.getFilter().filter(encountertype);
-			result.setValue(encountertype);	
+			String encparam=(String)pd.getFilter().filter(enc.getEncounterId().toString());
+			result.setValue(encparam);	
+			//encountertype = (String)pd.getFilter().filter(encountertype);
+			//result.setValue(encountertype);	
 		}
 		else if(enc != null)
 		{
