@@ -1,12 +1,18 @@
 package org.openmrs.module.rowperpatientreports.patientdata.definition;
 
+import org.openmrs.Program;
 
 
-public class RetrievePersonByRelationship extends BasePatientData implements PersonData {
+
+public class RetrievePersonByRelationshipAndByProgram extends BasePatientData implements PersonData {
 
 	private int relationshipTypeId;
 	
 	private String retrievePersonAorB;
+	
+	private  Program program;
+	
+	private ResultFilter filter = null;
 	
 	public int getRelationshipTypeId() {
 		return relationshipTypeId;
@@ -29,5 +35,23 @@ public class RetrievePersonByRelationship extends BasePatientData implements Per
     public void setRetrievePersonAorB(String retrievePersonAorB) {
     	this.retrievePersonAorB = retrievePersonAorB;
     }
+
+	public Program getProgram() {
+		return program;
+	}
+
+	public void setProgram(Program program) {
+		this.program = program;
+	}
+
+	public ResultFilter getFilter() {
+		return filter;
+	}
+
+	public void setFilter(ResultFilter filter) {
+		this.filter = filter;
+	}
+    
+    
     
 }
