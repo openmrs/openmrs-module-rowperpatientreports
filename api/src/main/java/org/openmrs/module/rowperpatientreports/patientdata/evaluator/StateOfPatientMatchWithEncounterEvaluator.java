@@ -47,7 +47,7 @@ public class StateOfPatientMatchWithEncounterEvaluator implements RowPerPatientD
 			Set<PatientState> states=pp.getStates();
 			for (PatientState patientState : states) {
 				for (Encounter encounter : visits) {
-					if(patientState.getState().getProgramWorkflow()!=null && patientState.getState().getProgramWorkflow().getProgramWorkflowId().equals(treatmentWf.getProgramWorkflowId()) && patientState.getStartDate().compareTo(encounter.getEncounterDatetime())==0 && patientState.getEndDate()==null && patientState.getVoided()==false){
+					if(patientState.getStartDate()!=null && encounter.getEncounterDatetime()!=null && patientState.getState().getProgramWorkflow()!=null && patientState.getState().getProgramWorkflow().getProgramWorkflowId().equals(treatmentWf.getProgramWorkflowId()) && patientState.getStartDate().compareTo(encounter.getEncounterDatetime())==0 && patientState.getEndDate()==null && patientState.getVoided()==false){
 						state=patientState;
 						break ppLoop;
 					}

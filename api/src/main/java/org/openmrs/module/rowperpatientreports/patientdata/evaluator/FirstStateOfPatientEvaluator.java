@@ -66,11 +66,11 @@ public class FirstStateOfPatientEvaluator implements RowPerPatientDataEvaluator 
 			
 			for (PatientState patientState : states) {
 				
-				if(state==null && patientState.getState().getProgramWorkflow()==treatmentWf){					
+				if(state==null && patientState.getState().getProgramWorkflow().getProgramWorkflowId()==treatmentWf.getProgramWorkflowId()){					
 					state=patientState;
 				}
 				
-				if(patientState.getState().getProgramWorkflow()==treatmentWf && patientState.getStartDate().compareTo(state.getStartDate())<0){
+				else if(patientState.getState().getProgramWorkflow().getProgramWorkflowId()==treatmentWf.getProgramWorkflowId() && patientState.getStartDate().compareTo(state.getStartDate())<0){
 					state=patientState;
 				}
 			}
