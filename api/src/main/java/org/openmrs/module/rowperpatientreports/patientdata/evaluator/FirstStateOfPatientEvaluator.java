@@ -40,8 +40,8 @@ public class FirstStateOfPatientEvaluator implements RowPerPatientDataEvaluator 
 		for (PatientProgram pp : programs) {
 			
 			//We only want current enrolled programs
-			if(pp.getActive(pd.getOnDate()) || pd.isIncludeCompleted())
-			{
+			/*if(pp.getActive(pd.getOnDate()) || pd.isIncludeCompleted())
+			{*/
 				
 				if(ppp == null)
 				{
@@ -54,7 +54,7 @@ public class FirstStateOfPatientEvaluator implements RowPerPatientDataEvaluator 
 						ppp = pp;
 					}
 				}
-			}
+			//}
 		}
 		
 		if(ppp != null)
@@ -65,12 +65,12 @@ public class FirstStateOfPatientEvaluator implements RowPerPatientDataEvaluator 
 			
 			
 			for (PatientState patientState : states) {
-				
+								
 				if(state==null && patientState.getState().getProgramWorkflow().getProgramWorkflowId()==treatmentWf.getProgramWorkflowId()){					
 					state=patientState;
-				}
+				}				
 				
-				else if(patientState.getState().getProgramWorkflow().getProgramWorkflowId()==treatmentWf.getProgramWorkflowId() && patientState.getStartDate().compareTo(state.getStartDate())<0){
+				else if(state!=null && patientState.getStartDate()!=null && patientState.getState().getProgramWorkflow().getProgramWorkflowId()==treatmentWf.getProgramWorkflowId() && patientState.getStartDate().compareTo(state.getStartDate())<0){
 					state=patientState;
 				}
 			}

@@ -57,7 +57,7 @@ public class MostRecentProgramWorkflowStateEvaluator implements RowPerPatientDat
 			}
 			else
 			{
-				result.setValue(mostRecent.toString());
+				result.setValue(mostRecent.getState().getConcept().getName().toString());
 			}
 		}
 		
