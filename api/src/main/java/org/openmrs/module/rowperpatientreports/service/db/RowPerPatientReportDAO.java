@@ -12,6 +12,8 @@ public interface RowPerPatientReportDAO {
 	
 	public Date getDateOfProgramEnrolment(Integer patientId, Integer programId, Date startDate, Date endDate);
 	
+	public Integer getLastPatientProgramByStartDateAndEndDate(Integer patientId, Integer programId, Date startDate, Date endDate);
+	
 	public Date getDateOfProgramEnrolmentAscending(Integer patientId, Integer programId, Date startDate, Date endDate);
 	
 	public Date getDateOfWorkflowStateChange(Integer patientId, List<Integer> stateIds, Date startDate, Date endDate);

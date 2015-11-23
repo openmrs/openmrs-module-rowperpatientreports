@@ -218,6 +218,38 @@ public class HibernateRowPerPatientReportDAO implements RowPerPatientReportDAO{
 	    return null;
 	}
 	
+public Integer getLastPatientProgramByStartDateAndEndDate(Integer patientId, Integer programId, Date startDate, Date endDate) {
+		
+		Date sDate = new Date();
+		sDate.setTime(0);
+		
+		Date eDate = Calendar.getInstance().getTime();
+		
+		if(startDate != null)
+		{
+			sDate = startDate;
+		}
+		if(endDate != null)
+		{
+			eDate = endDate;
+		}
+		
+		SQLQuery patientProgramIds = sessionFactory.getCurrentSession().createSQLQuery("select patient_program_id from patient_program where patient_id = :patientId and program_id = :programId and voided = 0 and date_enrolled >= :startDate and date_enrolled <= :endDate order by date_enrolled desc");
+		patientProgramIds.setInteger("patientId", patientId);
+		patientProgramIds.setInteger("programId", programId);
+		patientProgramIds.setDate("startDate", sDate);
+		patientProgramIds.setDate("endDate", eDate);
+		
+		List<Integer> ids = (List<Integer>)patientProgramIds.list();
+		
+		//TODO: figure out what is the most logical date to return when multiples are found
+		if(ids != null && ids.size() > 0)
+		{
+			return ids.get(0);
+		}
+	    return null;
+	}
+	
 	public Integer getObsValueBetweenDates(Integer patientId, Integer conceptId, Date beforeDate, Date afterDate, Date targetDate) {
 		SQLQuery obsBeforeDate = sessionFactory.getCurrentSession().createSQLQuery("select obs_id from obs where person_id = :patientId and concept_id = :conceptId and voided = 0 and obs_dateTime > :beforeDate and obs_dateTime < :afterDate ORDER BY abs(:targetDate - obs_dateTime)");
 		obsBeforeDate.setInteger("patientId", patientId);
