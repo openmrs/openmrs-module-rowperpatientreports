@@ -6,10 +6,12 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.DrugOrder;
 import org.openmrs.Obs;
 import org.openmrs.Order;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.mohorderentrybridge.api.MoHOrderEntryBridgeService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.ObservationPresentInMostRecentOrder;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
@@ -27,14 +29,14 @@ public class ObservationPresentInMostRecentOrderEvaluator implements RowPerPatie
 		
 		ObservationPresentInMostRecentOrder pd = (ObservationPresentInMostRecentOrder)patientData;
 		
-		List<Order> orders = Context.getOrderService().getOrdersByPatient(pd.getPatient());
+		List<DrugOrder> orders = Context.getService(MoHOrderEntryBridgeService.class).getDrugOrdersByPatient(pd.getPatient());
 	
         if(orders != null)
         {
         	//filter if the orders are restricted by concept
 			if(pd.getOrderConcept() != null)
 			{
-				Iterator<Order> it = orders.iterator();
+				Iterator<DrugOrder> it = orders.iterator();
 				while (it.hasNext()) {
 
 					Order order = it.next();
@@ -48,7 +50,7 @@ public class ObservationPresentInMostRecentOrderEvaluator implements RowPerPatie
 			//now filter on encounter type
 			if(pd.getEncounterType() != null)
 			{
-				Iterator<Order> it = orders.iterator();
+				Iterator<DrugOrder> it = orders.iterator();
 				while (it.hasNext()) {
 
 					Order order = it.next();

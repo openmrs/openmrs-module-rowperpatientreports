@@ -5,9 +5,17 @@
 		<artifactId>rowperpatientreports</artifactId>
 		<version>1.5.4-SNAPSHOT</version>
 	</parent>
-	<groupId>org.openmrs.module</groupId>
 	<artifactId>rowperpatientreports-api</artifactId>
 	<packaging>jar</packaging>
 	<name>Row Per Patient Reports API</name>
 	<description>API project for Row Per Patient Reports</description>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>mohorderentrybridge-api</artifactId>
+			<version>${mohorderentrybridgeVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
 </project>

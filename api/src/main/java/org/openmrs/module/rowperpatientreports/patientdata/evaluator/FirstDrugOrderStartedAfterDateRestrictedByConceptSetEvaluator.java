@@ -10,6 +10,7 @@ import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.mohorderentrybridge.api.MoHOrderEntryBridgeService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -29,7 +30,7 @@ public class FirstDrugOrderStartedAfterDateRestrictedByConceptSetEvaluator imple
 		DrugOrdersResult par = new DrugOrdersResult(patientData, context);
 		FirstDrugOrderStartedAfterDateRestrictedByConceptSet pd = (FirstDrugOrderStartedAfterDateRestrictedByConceptSet)patientData;
 		
-		List<DrugOrder> orders = Context.getOrderService().getDrugOrdersByPatient(pd.getPatient());
+		List<DrugOrder> orders = Context.getService(MoHOrderEntryBridgeService.class).getDrugOrdersByPatient(pd.getPatient());
 		
 		Mapped<RowPerPatientData> definition = pd.getDateOfPatientData();
 		
@@ -64,12 +65,12 @@ public class FirstDrugOrderStartedAfterDateRestrictedByConceptSetEvaluator imple
 							{
 								if(drugConcepts.contains(drug))
 								{
-									if(order.getStartDate() != null)
+									if(order.getEffectiveStartDate() != null)
 									{
 										Calendar startDate = Calendar.getInstance();
-										startDate.setTime(order.getStartDate());
+										startDate.setTime(order.getEffectiveStartDate());
 										
-										if(order.getStartDate().after(dateOfObs) && (startDrugOrder == null || (startDate.get(Calendar.YEAR) == dateOfOb.get(Calendar.YEAR) && startDate.get(Calendar.DAY_OF_YEAR) == dateOfOb.get(Calendar.DAY_OF_YEAR)) || order.getStartDate().before(startDrugOrder.getStartDate())))
+										if(order.getEffectiveStartDate().after(dateOfObs) && (startDrugOrder == null || (startDate.get(Calendar.YEAR) == dateOfOb.get(Calendar.YEAR) && startDate.get(Calendar.DAY_OF_YEAR) == dateOfOb.get(Calendar.DAY_OF_YEAR)) || order.getEffectiveStartDate().before(startDrugOrder.getEffectiveStartDate())))
 										{
 											startDrugOrder = order;
 										}

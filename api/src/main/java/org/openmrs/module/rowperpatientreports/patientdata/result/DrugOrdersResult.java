@@ -43,9 +43,9 @@ public class DrugOrdersResult extends BasePatientDataResult {
 		    
 			result.append(value.getDrug().getName());
 			result.append(" StartDate: ");
-			result.append(value.getStartDate());
+			result.append(value.getEffectiveStartDate());
 			result.append(" EndDate: ");
-			result.append(value.getDiscontinuedDate());
+			result.append(value.getEffectiveStopDate());
 			return result.toString();
 		}
 		return null;

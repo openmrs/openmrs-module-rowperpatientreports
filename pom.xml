@@ -23,7 +23,8 @@
 	</modules>
 
 	<properties>
-		<openMRSVersion>1.9.1</openMRSVersion>
+		<openMRSVersion>1.11.5</openMRSVersion>
+		<mohorderentrybridgeVersion>1.0-beta</mohorderentrybridgeVersion>
 		<reportingVersion>0.7.6</reportingVersion>
 		<calculationVersion>1.0</calculationVersion>
 		<serializationVersion>0.2.7</serializationVersion>

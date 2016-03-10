@@ -10,6 +10,7 @@ import org.openmrs.DrugOrder;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.mohorderentrybridge.api.MoHOrderEntryBridgeService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -66,21 +67,21 @@ public class BaselineDrugOrderEvaluator implements RowPerPatientDataEvaluator{
 		
 			if(pd.getDrugConcept() != null)
 			{
-				List<DrugOrder> orders = Context.getOrderService().getDrugOrdersByPatient(pd.getPatient());
+				List<DrugOrder> orders = Context.getService(MoHOrderEntryBridgeService.class).getDrugOrdersByPatient(pd.getPatient());
 				
 				for(DrugOrder order: orders)
 				{
 					if(order.getDrug() != null && order.getDrug().getConcept() != null && order.getDrug().getConcept().equals(pd.getDrugConcept()))
 					{
-						if((pd.getStartDate() == null || OpenmrsUtil.compare(order.getStartDate(), pd.getStartDate()) >=0) && (pd.getEndDate() == null || OpenmrsUtil.compare(order.getStartDate(), pd.getEndDate()) <=0))
+						if((pd.getStartDate() == null || OpenmrsUtil.compare(order.getEffectiveStartDate(), pd.getStartDate()) >=0) && (pd.getEndDate() == null || OpenmrsUtil.compare(order.getEffectiveStartDate(), pd.getEndDate()) <=0))
 						{
-							if(OpenmrsUtil.compare(afterDate.getTime(), order.getStartDate()) >=0)
+							if(OpenmrsUtil.compare(afterDate.getTime(), order.getEffectiveStartDate()) >=0)
 							{
-								if(!order.getDiscontinued() || order.getAutoExpireDate() == null) 
+								if(order.isActive() || order.getAutoExpireDate() == null) 
 								{
 									par.setValue(order);
 								}
-								else if(OpenmrsUtil.compare(order.getDiscontinuedDate(), beforeDate.getTime()) >=0)
+								else if(OpenmrsUtil.compare(order.getEffectiveStopDate(), beforeDate.getTime()) >=0)
 								{
 									par.setValue(order);
 								}

@@ -176,11 +176,11 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 	    			
 	    			if(drug == 0)
 	    			{
-		    			startDate.append(new SimpleDateFormat(res.getDateFormat()).format(drO.getStartDate()));
+		    			startDate.append(new SimpleDateFormat(res.getDateFormat()).format(drO.getEffectiveStartDate()));
 		    			
-		    			if(drO.getDiscontinuedDate() != null)
+		    			if(drO.getEffectiveStopDate() != null)
 		    			{
-		    				endDate.append(new SimpleDateFormat(res.getDateFormat()).format(drO.getDiscontinuedDate()));
+		    				endDate.append(new SimpleDateFormat(res.getDateFormat()).format(drO.getEffectiveStopDate()));
 		    			}
 	    			}
 	    		}
@@ -211,11 +211,11 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 			{
 	    		drugs = dr.getDrug().getName();
 	    			
-		    	startDate = new SimpleDateFormat(res.getDateFormat()).format(dr.getStartDate());
+		    	startDate = new SimpleDateFormat(res.getDateFormat()).format(dr.getEffectiveStartDate());
 		    			
-		    	if(dr.getDiscontinuedDate() != null)
+		    	if(dr.getEffectiveStopDate() != null)
     			{
-    				endDate = new SimpleDateFormat(res.getDateFormat()).format(dr.getDiscontinuedDate());
+    				endDate = new SimpleDateFormat(res.getDateFormat()).format(dr.getEffectiveStopDate());
     			}
 		    }
 			DataSetColumn c = new DataSetColumn(patientDataResult.getName(), patientDataResult.getDescription(), String.class);

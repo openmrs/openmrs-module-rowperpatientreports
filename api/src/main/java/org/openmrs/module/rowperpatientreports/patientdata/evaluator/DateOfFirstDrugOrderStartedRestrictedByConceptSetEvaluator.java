@@ -8,6 +8,7 @@ import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.mohorderentrybridge.api.MoHOrderEntryBridgeService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.DateOfFirstDrugOrderStartedRestrictedByConceptSet;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
@@ -27,7 +28,7 @@ public class DateOfFirstDrugOrderStartedRestrictedByConceptSetEvaluator implemen
 		
 		par.setFormat(pd.getDateFormat());
 		
-		List<DrugOrder> orders = Context.getOrderService().getDrugOrdersByPatient(pd.getPatient());
+		List<DrugOrder> orders = Context.getService(MoHOrderEntryBridgeService.class).getDrugOrdersByPatient(pd.getPatient());
 		
         if(orders != null)
         {   	
@@ -51,9 +52,9 @@ public class DateOfFirstDrugOrderStartedRestrictedByConceptSetEvaluator implemen
 						{
 							if(drugConcepts.contains(drug))
 							{
-								if(order.getStartDate() != null && (pd.getStartDate() == null || OpenmrsUtil.compare(order.getStartDate(), pd.getStartDate()) >= 0) && (pd.getEndDate() == null || OpenmrsUtil.compare(order.getStartDate(), pd.getEndDate()) <= 0))
+								if(order.getEffectiveStartDate() != null && (pd.getStartDate() == null || OpenmrsUtil.compare(order.getEffectiveStartDate(), pd.getStartDate()) >= 0) && (pd.getEndDate() == null || OpenmrsUtil.compare(order.getEffectiveStartDate(), pd.getEndDate()) <= 0))
 								{		
-									if(startDrugOrder == null || order.getStartDate().before(startDrugOrder.getStartDate()))
+									if(startDrugOrder == null || order.getEffectiveStartDate().before(startDrugOrder.getEffectiveStartDate()))
 									{
 										startDrugOrder = order;
 									}
@@ -63,7 +64,7 @@ public class DateOfFirstDrugOrderStartedRestrictedByConceptSetEvaluator implemen
 					}
 					if(startDrugOrder != null)
 					{
-						par.setValue(startDrugOrder.getStartDate());
+						par.setValue(startDrugOrder.getEffectiveStartDate());
 					}
 				}
 			}

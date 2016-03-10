@@ -82,11 +82,11 @@ public class AllDrugOrdersResult extends BasePatientDataResult {
     				result.append(drO.getDrug().getName());
     			}
     			result.append(" StartDate: ");
-    			result.append(sdf.format(drO.getStartDate()));
-    			if(drO.getDiscontinuedDate() != null)
+    			result.append(sdf.format(drO.getEffectiveStartDate()));
+    			if(drO.getEffectiveStopDate() != null)
     			{
     				result.append(" EndDate: ");
-    				result.append(sdf.format(drO.getDiscontinuedDate()));
+    				result.append(sdf.format(drO.getEffectiveStopDate()));
     			}
     			result.append(" ");
     		}
