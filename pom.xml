@@ -24,7 +24,7 @@
 
 	<properties>
 		<openMRSVersion>1.11.5</openMRSVersion>
-		<mohorderentrybridgeVersion>1.0-beta</mohorderentrybridgeVersion>
+		<mohorderentrybridgeVersion>1.0.1</mohorderentrybridgeVersion>
 		<reportingVersion>0.7.6</reportingVersion>
 		<calculationVersion>1.0</calculationVersion>
 		<serializationVersion>0.2.7</serializationVersion>
