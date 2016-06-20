@@ -13,19 +13,16 @@
  */
 package org.openmrs.module.rowperpatientreports.dataset.definition.evaluator;
 
-import java.text.SimpleDateFormat;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.DrugOrder;
-import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.ReflectionUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
@@ -50,6 +47,9 @@ import org.openmrs.module.rowperpatientreports.patientdata.result.NumberResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.ObservationResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
 import org.openmrs.module.rowperpatientreports.patientdata.service.RowPerPatientDataService;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * The logic that evaluates a {@link RowPerPatientDataSetDefinition} and produces an {@link DataSet}
@@ -154,8 +154,8 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 		{
 			AllDrugOrdersResult res = (AllDrugOrdersResult)patientDataResult;
 			StringBuilder drugs = new StringBuilder();
-			StringBuilder startDate = new StringBuilder();
-			StringBuilder endDate = new StringBuilder();
+			Date startDate = null;
+			Date endDate = null;
 			int drug = 0;
 			for(DrugOrder drO: res.getValue())
 		    {
@@ -176,11 +176,11 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 	    			
 	    			if(drug == 0)
 	    			{
-		    			startDate.append(new SimpleDateFormat(res.getDateFormat()).format(drO.getStartDate()));
-		    			
+		    			startDate = drO.getStartDate();
+
 		    			if(drO.getDiscontinuedDate() != null)
 		    			{
-		    				endDate.append(new SimpleDateFormat(res.getDateFormat()).format(drO.getDiscontinuedDate()));
+		    				endDate = drO.getDiscontinuedDate();
 		    			}
 	    			}
 	    		}
@@ -194,57 +194,43 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 			row.addColumnValue(c, patientDataResult.getValueAsString());
 			DataSetColumn c1 = new DataSetColumn(patientDataResult.getName() + " Drugs", patientDataResult.getDescription() + " Drugs", String.class);
 			row.addColumnValue(c1, drugs.toString().trim());
-			DataSetColumn c2 = new DataSetColumn(patientDataResult.getName() + " StartDate", patientDataResult.getDescription() + " StartDate", String.class);
-			row.addColumnValue(c2, startDate.toString().trim());
-			DataSetColumn c3 = new DataSetColumn(patientDataResult.getName() + " EndDate", patientDataResult.getDescription() + " EndDate", String.class);
-			row.addColumnValue(c3, endDate.toString().trim());
+
+            addDateColumn(row, res.getName() + " StartDate", res.getDescription() + " StartDate", startDate, res.getDateFormat());
+            addDateColumn(row, res.getName() + " EndDate", res.getDescription() + " EndDate", endDate, res.getDateFormat());
 		}
 		else if(patientDataResult instanceof DrugOrdersResult)
 		{
-			DrugOrdersResult res = (DrugOrdersResult)patientDataResult;
+            DrugOrdersResult res = (DrugOrdersResult)patientDataResult;
 			String drugs = ""; 
-			String startDate = ""; 
-			String endDate = ""; 
+			Date startDate = null;
+			Date endDate = null;
 			DrugOrder dr = res.getValue();
 			
 			if(dr != null)
 			{
 	    		drugs = dr.getDrug().getName();
 	    			
-		    	startDate = new SimpleDateFormat(res.getDateFormat()).format(dr.getStartDate());
+		    	startDate = dr.getStartDate();
 		    			
 		    	if(dr.getDiscontinuedDate() != null)
     			{
-    				endDate = new SimpleDateFormat(res.getDateFormat()).format(dr.getDiscontinuedDate());
+    				endDate = dr.getDiscontinuedDate();
     			}
 		    }
 			DataSetColumn c = new DataSetColumn(patientDataResult.getName(), patientDataResult.getDescription(), String.class);
 			row.addColumnValue(c, patientDataResult.getValueAsString());
 			DataSetColumn c1 = new DataSetColumn(patientDataResult.getName() + " Drugs", patientDataResult.getDescription() + " Drugs", String.class);
 			row.addColumnValue(c1, drugs);
-			DataSetColumn c2 = new DataSetColumn(patientDataResult.getName() + " StartDate", patientDataResult.getDescription() + " StartDate", String.class);
-			row.addColumnValue(c2, startDate);
-			DataSetColumn c3 = new DataSetColumn(patientDataResult.getName() + " EndDate", patientDataResult.getDescription() + " EndDate", String.class);
-			row.addColumnValue(c3, endDate);
+
+            addDateColumn(row, res.getName() + " StartDate", res.getDescription() + " StartDate", startDate, res.getDateFormat());
+            addDateColumn(row, res.getName() + " EndDate", res.getDescription() + " EndDate", endDate, res.getDateFormat());
 		}
 		//if it is an observation result we are also going to include the date as a column, so that the 
 		//values don't need to be retrieved twice
 		else if(patientDataResult instanceof ObservationResult)
 		{
 			ObservationResult obsRes = (ObservationResult)patientDataResult;
-			
-			DataSetColumn c = new DataSetColumn(patientDataResult.getName(), patientDataResult.getDescription(), patientDataResult.getColumnClass());
-			row.addColumnValue(c, patientDataResult.getValue());
-			
-			DataSetColumn d = new DataSetColumn(patientDataResult.getName() + " Date", patientDataResult.getDescription() + " Date", String.class);
-			if(obsRes.getDateOfObservation() != null)
-			{
-				row.addColumnValue(d, new SimpleDateFormat(obsRes.getDateFormat()).format(obsRes.getDateOfObservation()));
-			}
-			else
-			{
-				row.addColumnValue(d, null);
-			}
+            addDateColumn(row, obsRes.getName() + " Date", obsRes.getDescription() + " Date", obsRes.getDateOfObservation(), obsRes.getDateFormat());
 		}
 		else if(patientDataResult instanceof AllObservationValuesResult)
 		{
@@ -260,16 +246,8 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 				{
 					DataSetColumn c = new DataSetColumn(patientDataResult.getName() + i, patientDataResult.getDescription(), patientDataResult.getColumnClass());
 					row.addColumnValue(c, o.getValueAsString(Context.getLocale()));
-					
-					DataSetColumn d = new DataSetColumn(patientDataResult.getName() + i + " Date", patientDataResult.getDescription() + " Date", String.class);
-					if(o.getObsDatetime() != null)
-					{
-						row.addColumnValue(d, new SimpleDateFormat(obsRes.getDateFormat()).format(o.getObsDatetime()));
-					}
-					else
-					{
-						row.addColumnValue(d, null);
-					}
+
+                    addDateColumn(row, obsRes.getName() + i + " Date", obsRes.getDescription() + i + " Date", o.getObsDatetime(), obsRes.getDateFormat());
 					i++;
 				}
 				
@@ -298,16 +276,8 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 			
 			DataSetColumn c = new DataSetColumn(patientDataResult.getName(), patientDataResult.getDescription(), patientDataResult.getColumnClass());
 			row.addColumnValue(c, patientDataResult.getValue());
-			
-			DataSetColumn d = new DataSetColumn(patientDataResult.getName() + " Date", patientDataResult.getDescription() + " Date", String.class);
-			if(obsRes.getDateOfObservation() != null)
-			{
-				row.addColumnValue(d, new SimpleDateFormat(obsRes.getDateFormat()).format(obsRes.getDateOfObservation()));
-			}
-			else
-			{
-				row.addColumnValue(d, null);
-			}
+
+            addDateColumn(row, obsRes.getName() + " Date", obsRes.getDescription() + " Date", obsRes.getDateOfObservation(), obsRes.getDateFormat());
 		}
 		else if(patientDataResult instanceof EncounterResult)
 		{
@@ -315,17 +285,9 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 			
 			DataSetColumn c = new DataSetColumn(patientDataResult.getName(), patientDataResult.getDescription(), patientDataResult.getColumnClass());
 			row.addColumnValue(c, patientDataResult.getValue());
-			
-			DataSetColumn d = new DataSetColumn(patientDataResult.getName() + " Date", patientDataResult.getDescription() + " Date", String.class);
-			if(encRes.getValue() != null)
-			{
-				Encounter e = encRes.getValue();
-				row.addColumnValue(d, new SimpleDateFormat(encRes.getDateFormat()).format(e.getEncounterDatetime()));
-			}
-			else
-			{
-				row.addColumnValue(d, null);
-			}
+
+            Date dateVal = encRes.getValue() != null ? encRes.getValue().getEncounterDatetime() : null;
+            addDateColumn(row, encRes.getName() + " Date", encRes.getDescription() + " Date", dateVal, encRes.getDateFormat());
 		}
 		else if(patientDataResult instanceof NumberResult)
 		{
@@ -338,4 +300,14 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 			row.addColumnValue(c, patientDataResult.getValueAsString());
 		}
 	}
+
+    private void addDateColumn(DataSetRow row, String columnName, String columnDescription, Date dateValue, String format) {
+        Class dataType = format == null ? Date.class : String.class;
+        Object value = dateValue;
+        if (format != null) {
+            value = (dateValue == null ? "" : DateUtil.formatDate(dateValue, format));
+        }
+        DataSetColumn column = new DataSetColumn(columnName, columnDescription + " StartDate", dataType);
+        row.addColumnValue(column, value);
+    }
 }
