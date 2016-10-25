@@ -11,13 +11,11 @@
 .project
 .settings/*
 api/.classpath
+api/.project
 api/.settings/*
 api/target/*
-api/.project
-omod/.project
 omod/.classpath
+omod/.project
 omod/.settings/*
 omod/target/*
 /.settings
-
-target

@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Program;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -23,6 +24,10 @@ public class DateOfProgramEnrolmentEvaluator implements RowPerPatientDataEvaluat
 		DateResult result = new DateResult(patientData, context);
 		
 		DateOfProgramEnrolment pd = (DateOfProgramEnrolment)patientData;
+		if (pd.getProgramId() == 0) { //This is only for crown report, it should be improved to make it more generic
+			Program program=(Program)context.getParameterValue("programs");
+			pd.setProgramId(program.getProgramId());
+		}
 		
 		result.setFormat(pd.getDateFormat());
 
