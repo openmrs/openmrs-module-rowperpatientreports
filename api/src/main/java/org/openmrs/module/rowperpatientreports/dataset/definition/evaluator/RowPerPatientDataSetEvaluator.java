@@ -229,6 +229,9 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 		//values don't need to be retrieved twice
 		else if(patientDataResult instanceof ObservationResult)
 		{
+            DataSetColumn c = new DataSetColumn(patientDataResult.getName(), patientDataResult.getDescription(), patientDataResult.getColumnClass());
+            row.addColumnValue(c, patientDataResult.getValue());
+
 			ObservationResult obsRes = (ObservationResult)patientDataResult;
             addDateColumn(row, obsRes.getName() + " Date", obsRes.getDescription() + " Date", obsRes.getDateOfObservation(), obsRes.getDateFormat());
 		}
