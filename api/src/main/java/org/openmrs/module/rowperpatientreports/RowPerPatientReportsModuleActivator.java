@@ -16,28 +16,24 @@ package org.openmrs.module.rowperpatientreports;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.module.Activator;
+import org.openmrs.module.BaseModuleActivator;
 
 /**
  * This class contains the logic that is run every time this module
  * is either started or shutdown
  */
-public class RowPerPatientReportsModuleActivator implements Activator {
+public class RowPerPatientReportsModuleActivator extends BaseModuleActivator {
 
 	private static Log log = LogFactory.getLog(RowPerPatientReportsModuleActivator.class);
 
-	/**
-	 * @see org.openmrs.module.Activator#startup()
-	 */
-	public void startup() {
-		log.info("Starting Row Per Patient Reports Module");
+	@Override
+	public void started() {
+		log.info("Started Row Per Patient Reports Module");
 	}
-	
-	/**
-	 *  @see org.openmrs.module.Activator#shutdown()
-	 */
-	public void shutdown() {
-		log.info("Stopping Row Per Patient Reports Module");
+
+    @Override
+	public void stopped() {
+		log.info("Stopped Row Per Patient Reports Module");
 	}
-	
+
 }
