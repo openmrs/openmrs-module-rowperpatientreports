@@ -107,10 +107,10 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 			
 			//left here for testing purposes
 			i++;
-//			if(i > 10)
-//			{
-//				break;
-//			}
+			if(i % 10 == 0) {
+			    log.debug("Num patient rows evaluated: " + i + " / " + cohort.size() + ", " + (int)(i*100/cohort.size()) + " %");
+			}
+            Context.clearSession();
 					
 			for(Mapped<RowPerPatientData> mapped: definition.getColumns())
 			{
@@ -209,9 +209,9 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 			if(dr != null)
 			{
 	    		drugs = dr.getDrug().getName();
-	    			
+
 		    	startDate = dr.getStartDate();
-		    			
+
 		    	if(dr.getDiscontinuedDate() != null)
     			{
     				endDate = dr.getDiscontinuedDate();
@@ -225,7 +225,7 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
             addDateColumn(row, res.getName() + " StartDate", res.getDescription() + " StartDate", startDate, res.getDateFormat());
             addDateColumn(row, res.getName() + " EndDate", res.getDescription() + " EndDate", endDate, res.getDateFormat());
 		}
-		//if it is an observation result we are also going to include the date as a column, so that the 
+		//if it is an observation result we are also going to include the date as a column, so that the
 		//values don't need to be retrieved twice
 		else if(patientDataResult instanceof ObservationResult)
 		{
@@ -239,9 +239,9 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 		{
 			DataSetColumn cc = new DataSetColumn(patientDataResult.getName(), patientDataResult.getDescription(), String.class);
 			row.addColumnValue(cc, patientDataResult.getValueAsString());
-			
+
 			AllObservationValuesResult obsRes = (AllObservationValuesResult)patientDataResult;
-			
+
 			if(obsRes.getValue() != null)
 			{
 				int i = 1;
