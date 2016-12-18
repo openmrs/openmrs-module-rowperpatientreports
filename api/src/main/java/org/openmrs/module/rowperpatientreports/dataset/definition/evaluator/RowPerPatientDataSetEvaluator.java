@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.rowperpatientreports.dataset.definition.evaluator;
 
+import org.apache.commons.lang.time.StopWatch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
@@ -35,6 +36,9 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.module.reporting.report.service.ReportServiceImpl;
 import org.openmrs.module.rowperpatientreports.dataset.definition.RowPerPatientDataSetDefinition;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
 import org.openmrs.module.rowperpatientreports.patientdata.result.AllDrugOrdersResult;
@@ -98,18 +102,29 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 				log.error("Unable to evaluate Filter", e);
 			}
 		}
-		
-		//left here for testing so that you can restrict the number of patients returned to 10
-		//to speed up execution time
+
+		String msg = "Evaluating Row Per Patient Data: ";
+		logMessage(msg + cohort.size() + " rows and " + definition.getColumns().size() + " columns", context);
+        StopWatch sw = new StopWatch();
+        sw.start();
+
 		int i = 0;
+		int numSecondsBetweenMessages = 15;
+		int numMessagesLogged = 0;
+
 		for (Integer patientId : cohort.getMemberIds()) {			
 			DataSetRow row = new DataSetRow();
-			
-			//left here for testing purposes
+
 			i++;
-			if(i % 10 == 0) {
-			    log.debug("Num patient rows evaluated: " + i + " / " + cohort.size() + ", " + (int)(i*100/cohort.size()) + " %");
+
+			long currentDuration = sw.getTime();
+			int numSecondsElapsed = (int)(currentDuration/1000);
+
+			if(numSecondsElapsed/numSecondsBetweenMessages > numMessagesLogged) {
+			    logMessage(msg + i + " / " + cohort.size() + " ( " + (int)(i*100/cohort.size()) + " % )", context);
+			    numMessagesLogged++;
 			}
+
             Context.clearSession();
 					
 			for(Mapped<RowPerPatientData> mapped: definition.getColumns())
@@ -136,6 +151,9 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 			}
 			dataSet.addRow(row);
 		}
+
+		sw.stop();
+		logMessage(msg + " Complete in " + sw.toString(), context);
 		
 		return dataSet;
 	}
@@ -312,5 +330,15 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
         }
         DataSetColumn column = new DataSetColumn(columnName, columnDescription + " StartDate", dataType);
         row.addColumnValue(column, value);
+    }
+
+    private void logMessage(String message, EvaluationContext context) {
+        ReportService rs = Context.getService(ReportService.class);
+        if (context != null) {
+            String requestUuid = (String)context.getContextValues().get(ReportServiceImpl.REPORT_REQUEST_UUID);
+            if (ObjectUtil.notNull(requestUuid)) {
+                rs.logReportMessage(requestUuid, message);
+            }
+        }
     }
 }
