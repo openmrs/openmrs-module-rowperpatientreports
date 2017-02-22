@@ -37,14 +37,14 @@ public class PatientRelationshipEvaluator implements RowPerPatientDataEvaluator{
 					try{
 						if(("A").equals(pd.getRetrievePersonAorB()))
 						{
-							if(rp.getPersonA().getId() != patientsData.getPatient().getPersonId())
+							if((rp.getPersonA().getId() != patientsData.getPatient().getPersonId()) && rp.getEndDate()==null)
 							{
 								relatedPerson.add(rp.getPersonA());
 							}
 						}
 						if(("B").equals(pd.getRetrievePersonAorB()))
 						{
-							if(rp.getPersonB().getId() != patientsData.getPatient().getPersonId())
+							if((rp.getPersonB().getId() != patientsData.getPatient().getPersonId()) && rp.getEndDate()==null)
 							{
 								relatedPerson.add(rp.getPersonB());
 							}	

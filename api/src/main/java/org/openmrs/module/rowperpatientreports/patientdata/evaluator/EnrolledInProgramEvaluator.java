@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.PatientProgram;
+import org.openmrs.Program;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -29,6 +30,12 @@ public PatientDataResult evaluate(RowPerPatientData patientData, EvaluationConte
 		StringResult result = new StringResult(patientData, context);
 		
 		EnrolledInProgram pd = (EnrolledInProgram)patientData;
+
+	if(pd.getProgram()==null){
+		Program pr=(Program)context.getParameterValue("programs");
+		pd.setProgram(pr);
+	}
+
 
 		if(pd.getProgram().getProgramId() !=null)
 		{
