@@ -7,7 +7,6 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.PatientProgram;
-import org.openmrs.Program;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -23,27 +22,28 @@ public class EnrolledInProgramEvaluator implements RowPerPatientDataEvaluator{
 
 	//protected Log log = LogFactory.getLog(this.getClass());
 	protected Log log = LogFactory.getLog(EnrolledInProgramEvaluator.class);
-	
-	
-public PatientDataResult evaluate(RowPerPatientData patientData, EvaluationContext context) {
-	    
+
+
+	public PatientDataResult evaluate(RowPerPatientData patientData, EvaluationContext context) {
+
 		StringResult result = new StringResult(patientData, context);
-		
+
 		EnrolledInProgram pd = (EnrolledInProgram)patientData;
-
-	if(pd.getProgram()==null){
-		Program pr=(Program)context.getParameterValue("programs");
-		pd.setProgram(pr);
-	}
-
 
 		if(pd.getProgram().getProgramId() !=null)
 		{
-			SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy");
+
+			SimpleDateFormat sdf= null;
+			if(pd.getDateFormat() != null) {
+				sdf = new SimpleDateFormat(pd.getDateFormat());
+			}else{
+				sdf = new SimpleDateFormat("dd/MM/yyyy");
+			}
+
 			Integer progId=Context.getService(RowPerPatientDataService.class).getDao().getLastPatientProgramByStartDateAndEndDate(pd.getPatientId(), pd.getProgram().getProgramId(), null, null);
 			PatientProgram pp=null;
 			if(progId!=null){
-			pp=Context.getProgramWorkflowService().getPatientProgram(progId.intValue());
+				pp=Context.getProgramWorkflowService().getPatientProgram(progId.intValue());
 			}
 			if(pp == null)
 			{
@@ -51,11 +51,11 @@ public PatientDataResult evaluate(RowPerPatientData patientData, EvaluationConte
 			}
 			else if(pd.getValueType().equalsIgnoreCase("EnrollmentDate"))
 			{
-				result.setValue(" "+sdf.format(pp.getDateEnrolled()));
+				result.setValue(""+sdf.format(pp.getDateEnrolled()));
 			}
 			else if(pd.getValueType().equalsIgnoreCase("ExitDate") && pp.getDateCompleted()!=null)
 			{
-				result.setValue(" "+sdf.format(pp.getDateCompleted()));
+				result.setValue(""+sdf.format(pp.getDateCompleted()));
 			}
 			else if(pd.getValueType().equalsIgnoreCase("OutCome") && pp.getOutcome()!=null)
 			{
@@ -64,12 +64,12 @@ public PatientDataResult evaluate(RowPerPatientData patientData, EvaluationConte
 				result.setValue(" ");
 			}*/
 		}
-		
+
 		if(pd.getFilter() != null)
 		{
 			result.setValue((String)pd.getFilter().filter(result.getValue()));
 		}
-	
+
 		return result;
-    }
+	}
 }
