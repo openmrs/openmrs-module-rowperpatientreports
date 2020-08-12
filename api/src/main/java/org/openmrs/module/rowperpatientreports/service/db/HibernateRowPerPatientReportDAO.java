@@ -7,8 +7,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SQLQuery;
-import org.hibernate.SessionFactory;
-
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 
 public class HibernateRowPerPatientReportDAO implements RowPerPatientReportDAO{
 	
@@ -17,14 +16,18 @@ public class HibernateRowPerPatientReportDAO implements RowPerPatientReportDAO{
 	/**
 	 * Hibernate sessionFactory.getCurrentSession() factory
 	 */
-	private SessionFactory sessionFactory;
-	
+	private DbSessionFactory sessionFactory;
+
+	public DbSessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
 	/**
 	 * Set sessionFactory.getCurrentSession() factory
 	 * 
 	 * @param sessionFactory SessionFactory to set
 	 */
-	public void setSessionFactory(SessionFactory sessionFactory) {
+	public void setSessionFactory(DbSessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 

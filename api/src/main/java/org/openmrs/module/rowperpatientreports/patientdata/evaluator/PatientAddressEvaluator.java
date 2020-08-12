@@ -50,10 +50,10 @@ public class PatientAddressEvaluator implements RowPerPatientDataEvaluator{
 				resultStr.append(address.getCityVillage());
 			}
 			
-			if(pd.isIncludeCell() && address.getNeighborhoodCell() != null)
+			if(pd.isIncludeCell() && address.getAddress3() != null)
 			{
 				resultStr.append(" ");
-				resultStr.append(address.getNeighborhoodCell());
+				resultStr.append(address.getAddress3());
 			}
 			
 			if(pd.isIncludeUmudugudu() && address.getAddress1() != null)

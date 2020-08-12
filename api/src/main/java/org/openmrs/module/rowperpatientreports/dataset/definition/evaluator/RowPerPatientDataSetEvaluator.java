@@ -13,6 +13,9 @@
  */
 package org.openmrs.module.rowperpatientreports.dataset.definition.evaluator;
 
+import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,6 +24,7 @@ import org.openmrs.DrugOrder;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.Cohorts;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -36,7 +40,6 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.reporting.report.service.ReportServiceImpl;
 import org.openmrs.module.rowperpatientreports.dataset.definition.RowPerPatientDataSetDefinition;
@@ -51,9 +54,6 @@ import org.openmrs.module.rowperpatientreports.patientdata.result.NumberResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.ObservationResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
 import org.openmrs.module.rowperpatientreports.patientdata.service.RowPerPatientDataService;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * The logic that evaluates a {@link RowPerPatientDataSetDefinition} and produces an {@link DataSet}
@@ -84,11 +84,6 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		//evaluate the base cohort
 		Cohort cohort = context.getBaseCohort();
-
-		// By default, get all patients
-		if (cohort == null) {
-			cohort = Context.getPatientSetService().getAllPatients();
-		}
 		
 		//for all filters assigned to the dataset evaluate then intersect to get
 		//a resulting set of patients that are a part of all the cohorts
@@ -97,10 +92,21 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 			Cohort filter;
 			try {
 				filter = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
-				cohort = Cohort.intersect(cohort, filter);
-			} catch (EvaluationException e) {
+				if (cohort == null) {
+					cohort = filter;
+				}
+				else {
+					cohort = Cohort.intersect(cohort, filter);
+				}
+			}
+			catch (EvaluationException e) {
 				log.error("Unable to evaluate Filter", e);
 			}
+		}
+
+		// By default, get all patients
+		if (cohort == null) {
+			cohort = Cohorts.allPatients();
 		}
 
 		String msg = "Evaluating Row Per Patient Data: ";
@@ -194,11 +200,11 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 	    			
 	    			if(drug == 0)
 	    			{
-		    			startDate = drO.getStartDate();
+		    			startDate = drO.getEffectiveStartDate();
 
-		    			if(drO.getDiscontinuedDate() != null)
+		    			if(drO.getEffectiveStopDate() != null)
 		    			{
-		    				endDate = drO.getDiscontinuedDate();
+		    				endDate = drO.getEffectiveStopDate();
 		    			}
 	    			}
 	    		}
@@ -228,11 +234,11 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 			{
 	    		drugs = dr.getDrug().getName();
 
-		    	startDate = dr.getStartDate();
+		    	startDate = dr.getEffectiveStartDate();
 
-		    	if(dr.getDiscontinuedDate() != null)
+		    	if(dr.getEffectiveStopDate() != null)
     			{
-    				endDate = dr.getDiscontinuedDate();
+    				endDate = dr.getEffectiveStopDate();
     			}
 		    }
 			DataSetColumn c = new DataSetColumn(patientDataResult.getName(), patientDataResult.getDescription(), String.class);

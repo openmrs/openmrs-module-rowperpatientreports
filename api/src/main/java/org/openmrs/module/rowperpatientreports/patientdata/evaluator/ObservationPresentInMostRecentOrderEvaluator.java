@@ -15,6 +15,7 @@ import org.openmrs.module.rowperpatientreports.patientdata.definition.Observatio
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
 import org.openmrs.module.rowperpatientreports.patientdata.result.ObservationResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
+import org.openmrs.parameter.OrderSearchCriteriaBuilder;
 
 @Handler(supports={ObservationPresentInMostRecentOrder.class})
 public class ObservationPresentInMostRecentOrderEvaluator implements RowPerPatientDataEvaluator{
@@ -26,8 +27,10 @@ public class ObservationPresentInMostRecentOrderEvaluator implements RowPerPatie
 		ObservationResult par = new ObservationResult(patientData, context);
 		
 		ObservationPresentInMostRecentOrder pd = (ObservationPresentInMostRecentOrder)patientData;
-		
-		List<Order> orders = Context.getOrderService().getOrdersByPatient(pd.getPatient());
+
+		OrderSearchCriteriaBuilder builder = new OrderSearchCriteriaBuilder();
+		builder.setPatient(pd.getPatient()).setIncludeVoided(false);
+		List<Order> orders = Context.getOrderService().getOrders(builder.build());
 	
         if(orders != null)
         {

@@ -1,15 +1,21 @@
 package org.openmrs.module.rowperpatientreports.patientdata.evaluator;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Cohort;
 import org.openmrs.Person;
+import org.openmrs.Program;
 import org.openmrs.Relationship;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RetrievePersonByRelationshipAndByProgram;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
@@ -48,15 +54,24 @@ public class RetrievePersonByRelationshipAndByProgramEvaluator implements RowPer
 			}
 		}
 		if(person !=null && pd.getProgram()!=null){
-			Set<Integer> patientsIds=Context.getPatientSetService().getPatientsInProgram(Context.getProgramWorkflowService().getProgram(pd.getProgram().getProgramId()), null, null).getMemberIds();
-			int idMotherICC;
-			int idPerson;
-			for (Integer integer : patientsIds) {
-				idMotherICC=integer;
-				idPerson=person.getPersonId();
-				if(idMotherICC == idPerson){
-					result.addPerson(person);
+			Program program = Context.getProgramWorkflowService().getProgram(pd.getProgram().getProgramId());
+			InProgramCohortDefinition cd = new InProgramCohortDefinition();
+			cd.setPrograms(Arrays.asList(program));
+			try {
+				Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, new EvaluationContext());
+				Set<Integer> patientsIds = c.getMemberIds();
+				int idMotherICC;
+				int idPerson;
+				for (Integer integer : patientsIds) {
+					idMotherICC = integer;
+					idPerson = person.getPersonId();
+					if (idMotherICC == idPerson) {
+						result.addPerson(person);
+					}
 				}
+			}
+			catch (EvaluationException e) {
+				throw new RuntimeException(e);
 			}
 			
 		}

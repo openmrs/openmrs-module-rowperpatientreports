@@ -9,6 +9,7 @@ import org.openmrs.DrugOrder;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.rowperpatientreports.RowPerPatientReportsUtil;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.FirstDrugOrderStartedRestrictedByConceptSet;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
 import org.openmrs.module.rowperpatientreports.patientdata.result.DrugOrdersResult;
@@ -27,7 +28,7 @@ public class FirstDrugOrderStartedRestrictedByConceptSetEvaluator implements Row
 		
 		par.setDateFormat(pd.getDateFormat());
 		
-		List<DrugOrder> orders = Context.getOrderService().getDrugOrdersByPatient(pd.getPatient());
+		List<DrugOrder> orders = RowPerPatientReportsUtil.getDrugOrdersByPatient(pd.getPatient());
 		
         if(orders != null)
         {   	
@@ -51,9 +52,9 @@ public class FirstDrugOrderStartedRestrictedByConceptSetEvaluator implements Row
 						{
 							if(drugConcepts.contains(drug))
 							{
-								if(order.getStartDate() != null && (pd.getStartDate() == null || OpenmrsUtil.compare(order.getStartDate(), pd.getStartDate()) >= 0) && (pd.getEndDate() == null || OpenmrsUtil.compare(order.getStartDate(), pd.getEndDate()) <= 0))
+								if(order.getEffectiveStartDate() != null && (pd.getStartDate() == null || OpenmrsUtil.compare(order.getEffectiveStartDate(), pd.getStartDate()) >= 0) && (pd.getEndDate() == null || OpenmrsUtil.compare(order.getEffectiveStartDate(), pd.getEndDate()) <= 0))
 								{		
-									if(startDrugOrder == null || order.getStartDate().before(startDrugOrder.getStartDate()))
+									if(startDrugOrder == null || order.getEffectiveStartDate().before(startDrugOrder.getEffectiveStartDate()))
 									{
 										startDrugOrder = order;
 									}

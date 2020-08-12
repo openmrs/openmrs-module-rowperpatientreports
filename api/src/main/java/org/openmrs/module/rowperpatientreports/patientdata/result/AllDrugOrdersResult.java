@@ -7,8 +7,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.DrugOrder;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.ResultFilter;
+import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
 
 
 public class AllDrugOrdersResult extends BasePatientDataResult {
@@ -82,11 +82,11 @@ public class AllDrugOrdersResult extends BasePatientDataResult {
     				result.append(drO.getDrug().getName());
     			}
     			result.append(" StartDate: ");
-    			result.append(sdf.format(drO.getStartDate()));
-    			if(drO.getDiscontinuedDate() != null)
+    			result.append(sdf.format(drO.getEffectiveStartDate()));
+    			if(drO.getEffectiveStopDate() != null)
     			{
     				result.append(" EndDate: ");
-    				result.append(sdf.format(drO.getDiscontinuedDate()));
+    				result.append(sdf.format(drO.getEffectiveStopDate()));
     			}
     			result.append(" ");
     		}

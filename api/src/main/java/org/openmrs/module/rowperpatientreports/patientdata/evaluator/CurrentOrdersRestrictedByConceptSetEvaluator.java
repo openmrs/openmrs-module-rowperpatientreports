@@ -10,6 +10,7 @@ import org.openmrs.DrugOrder;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.rowperpatientreports.RowPerPatientReportsUtil;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.CurrentOrdersRestrictedByConceptSet;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
 import org.openmrs.module.rowperpatientreports.patientdata.result.AllDrugOrdersResult;
@@ -27,7 +28,7 @@ public class CurrentOrdersRestrictedByConceptSetEvaluator implements RowPerPatie
 		
 		par.setDrugFilter(pd.getDrugFilter());
 		
-		List<DrugOrder> orders = Context.getOrderService().getDrugOrdersByPatient(pd.getPatient());
+		List<DrugOrder> orders = RowPerPatientReportsUtil.getDrugOrdersByPatient(pd.getPatient());
 	
         if(orders != null)
         {
@@ -49,7 +50,7 @@ public class CurrentOrdersRestrictedByConceptSetEvaluator implements RowPerPatie
 						}
 						if(drug != null)
 						{
-							if(drugConcepts.contains(drug) && order.isCurrent(pd.getOnDate()))
+							if(drugConcepts.contains(drug) && RowPerPatientReportsUtil.isCurrent(order, pd.getOnDate()))
 							{
 								filtered.add(order);
 							}

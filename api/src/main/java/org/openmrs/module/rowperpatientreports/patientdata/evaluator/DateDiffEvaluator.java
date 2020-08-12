@@ -17,6 +17,8 @@ import org.openmrs.module.rowperpatientreports.patientdata.definition.DateDiff;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
 import org.openmrs.module.rowperpatientreports.patientdata.result.NumberResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
+import org.openmrs.parameter.EncounterSearchCriteriaBuilder;
+
 @Handler(supports={DateDiff.class})
 public class DateDiffEvaluator implements RowPerPatientDataEvaluator {
 	protected Log log = LogFactory.getLog(DateDiffEvaluator.class);
@@ -39,7 +41,9 @@ public class DateDiffEvaluator implements RowPerPatientDataEvaluator {
 		if(pd.getEncounterTypes()==null){
 		encounters=Context.getEncounterService().getEncountersByPatient(pd.getPatient());
 	    }else{
-	    	encounters=Context.getEncounterService().getEncounters(pd.getPatient(), null, null, null, null, pd.getEncounterTypes(), null, false);	    	
+			EncounterSearchCriteriaBuilder builder = new EncounterSearchCriteriaBuilder();
+			builder.setPatient(pd.getPatient()).setEncounterTypes(pd.getEncounterTypes()).setIncludeVoided(false);
+			encounters=Context.getEncounterService().getEncounters(builder.createEncounterSearchCriteria());
 	    }
 	    	
 		Date encounterDate=null;

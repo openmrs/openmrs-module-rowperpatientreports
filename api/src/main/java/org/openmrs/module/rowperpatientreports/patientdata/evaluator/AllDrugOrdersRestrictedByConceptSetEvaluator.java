@@ -10,6 +10,7 @@ import org.openmrs.DrugOrder;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.rowperpatientreports.RowPerPatientReportsUtil;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.AllDrugOrdersRestrictedByConceptSet;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
 import org.openmrs.module.rowperpatientreports.patientdata.result.AllDrugOrdersResult;
@@ -25,7 +26,7 @@ public class AllDrugOrdersRestrictedByConceptSetEvaluator implements RowPerPatie
 		AllDrugOrdersResult par = new AllDrugOrdersResult(patientData, context);
 		AllDrugOrdersRestrictedByConceptSet pd = (AllDrugOrdersRestrictedByConceptSet)patientData;
 		
-		List<DrugOrder> orders = Context.getOrderService().getDrugOrdersByPatient(pd.getPatient());
+		List<DrugOrder> orders = RowPerPatientReportsUtil.getDrugOrdersByPatient(pd.getPatient());
 	
         if(orders != null)
         {

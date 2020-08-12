@@ -10,8 +10,7 @@
            http://www.springframework.org/schema/context/spring-context-2.5.xsd
            http://www.springframework.org/schema/util
            http://www.springframework.org/schema/util/spring-util-2.0.xsd">
-           
-    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
+
     <context:component-scan base-package="@MODULE_PACKAGE@" />
 
 	<bean id="rowperpatientreports_rowPerPatientDataServiceImpl" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
@@ -20,7 +19,7 @@
 			<bean class="org.openmrs.module.rowperpatientreports.patientdata.service.RowPerPatientDataServiceImpl">
 				<property name="dao">
 					<bean class="org.openmrs.module.rowperpatientreports.service.db.HibernateRowPerPatientReportDAO">
-						<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
+						<property name="sessionFactory"><ref bean="dbSessionFactory"/></property>
 					</bean>
 				</property>
 			</bean>	

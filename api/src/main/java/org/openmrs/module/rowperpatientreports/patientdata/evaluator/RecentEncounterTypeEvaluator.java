@@ -10,6 +10,7 @@ import org.openmrs.module.rowperpatientreports.patientdata.definition.RecentEnco
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
 import org.openmrs.module.rowperpatientreports.patientdata.result.DateValueResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
+import org.openmrs.parameter.EncounterSearchCriteriaBuilder;
 
 @Handler(supports={RecentEncounterType.class})
 public class RecentEncounterTypeEvaluator implements RowPerPatientDataEvaluator{
@@ -21,7 +22,9 @@ public PatientDataResult evaluate(RowPerPatientData patientsData, EvaluationCont
 		if(pd.getEncounterTypes()==null){
 		encounters=Context.getEncounterService().getEncountersByPatient(pd.getPatient());
 	    }else{
-	    	encounters=Context.getEncounterService().getEncounters(pd.getPatient(), null, null, null, null, pd.getEncounterTypes(), null, false);	    	
+			EncounterSearchCriteriaBuilder builder = new EncounterSearchCriteriaBuilder();
+			builder.setPatient(pd.getPatient()).setEncounterTypes(pd.getEncounterTypes()).setIncludeVoided(false);
+	    	encounters=Context.getEncounterService().getEncounters(builder.createEncounterSearchCriteria());
 	    }
 	    	
 		String encountertype="";

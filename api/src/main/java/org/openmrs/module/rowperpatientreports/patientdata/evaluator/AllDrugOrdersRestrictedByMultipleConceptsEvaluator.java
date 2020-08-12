@@ -8,8 +8,8 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.rowperpatientreports.RowPerPatientReportsUtil;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.AllDrugOrdersRestrictedByMultipleConcepts;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
 import org.openmrs.module.rowperpatientreports.patientdata.result.AllDrugOrdersResult;
@@ -25,7 +25,7 @@ public class AllDrugOrdersRestrictedByMultipleConceptsEvaluator implements RowPe
 		AllDrugOrdersResult par = new AllDrugOrdersResult(patientData, context);
 		AllDrugOrdersRestrictedByMultipleConcepts pd = (AllDrugOrdersRestrictedByMultipleConcepts)patientData;
 		
-		List<DrugOrder> orders = Context.getOrderService().getDrugOrdersByPatient(pd.getPatient());
+		List<DrugOrder> orders = RowPerPatientReportsUtil.getDrugOrdersByPatient(pd.getPatient());
 	
         if(orders != null)
         {

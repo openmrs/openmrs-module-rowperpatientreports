@@ -11,7 +11,7 @@
 	<description>Row Per Patient Reports</description>
 	<activator>@MODULE_PACKAGE@.RowPerPatientReportsModuleActivator</activator>
 	<updateURL>https://dev.openmrs.org/modules/download/@MODULE_ID@/update.rdf</updateURL>
-	<require_version>1.4.0</require_version>
+	<require_version>${openMRSVersion}</require_version>
 	
 	<require_modules>
 		<require_module>org.openmrs.module.reporting</require_module>
