@@ -24,6 +24,7 @@ import org.openmrs.DrugOrder;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.cohort.Cohorts;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
@@ -96,7 +97,7 @@ public class RowPerPatientDataSetEvaluator implements DataSetEvaluator {
 					cohort = filter;
 				}
 				else {
-					cohort = Cohort.intersect(cohort, filter);
+					cohort = CohortUtil.intersect(cohort, filter);
 				}
 			}
 			catch (EvaluationException e) {
