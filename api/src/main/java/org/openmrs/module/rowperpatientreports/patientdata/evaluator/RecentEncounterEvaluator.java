@@ -61,8 +61,9 @@ public PatientDataResult evaluate(RowPerPatientData patientsData, EvaluationCont
 				
 				
 			}
-			
-			encountertype=enc.getEncounterType().getName();
+			if(enc !=null) {
+				encountertype = enc.getEncounterType().getName();
+			}
 		}
 		
 		if(enc != null)
