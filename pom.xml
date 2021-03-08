@@ -24,7 +24,7 @@
 
 	<properties>
 		<openMRSVersion>1.9.1</openMRSVersion>
-		<reportingVersion>0.10.7-SNAPSHOT</reportingVersion>
+		<reportingVersion>0.11.0</reportingVersion>
 		<calculationVersion>1.0</calculationVersion>
 		<serializationVersion>0.2.7</serializationVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
