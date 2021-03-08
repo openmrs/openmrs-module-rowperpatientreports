@@ -3,7 +3,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>rowperpatientreports</artifactId>
-	<version>1.5.7-SNAPSHOT</version>
+	<version>1.6.0</version>
 	<packaging>pom</packaging>
 	<name>Row Per Patient Reports</name>
 	<description>Parent project for Row Per Patient Reports</description>
@@ -14,7 +14,7 @@
 		<connection>scm:git:git@github.com:openmrs/openmrs-module-rowperpatientreports.git</connection>
 		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-rowperpatientreports.git</developerConnection>
 		<url>https://github.com/openmrs/openmrs-module-rowperpatientreports/</url>
-		<tag>HEAD</tag>
+		<tag>1.6.0</tag>
 	</scm>
 
 	<modules>
