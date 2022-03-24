@@ -12,8 +12,8 @@
 	<url>http://openmrs.org</url>
 
 	<scm>
-		<connection>scm:git:https://github.com/openmrs/openmrs-module-rowperpatientreports/</connection>
-		<developerConnection>scm:git:https://github.com/openmrs/openmrs-module-rowperpatientreports/</developerConnection>
+		<connection>scm:git:git@github.com:openmrs/openmrs-module-rowperpatientreports.git</connection>
+		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-rowperpatientreports.git</developerConnection>
 		<url>https://github.com/openmrs/openmrs-module-rowperpatientreports/</url>
 		<tag>HEAD</tag>
 	</scm>
@@ -24,7 +24,7 @@
 	</modules>
 
 	<properties>
-		<openMRSVersion>2.3.2-SNAPSHOT</openMRSVersion>
+		<openMRSVersion>2.3.4</openMRSVersion>
 		<reportingVersion>1.20.0</reportingVersion>
 		<calculationVersion>1.2</calculationVersion>
 		<serializationVersion>0.2.14</serializationVersion>
